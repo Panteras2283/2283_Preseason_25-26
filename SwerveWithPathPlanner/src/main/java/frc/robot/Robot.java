@@ -3,43 +3,51 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private final RobotContainer m_robotContainer;
 
-  private final boolean kUseLimelight = false;
+  private final boolean kUseLimelight = true;
+
+
+  //We create the Field2d object to visualize the robot's position on the field in the dashboard.
+  private final Field2d m_field = new Field2d();
 
   public Robot() {
     m_robotContainer = new RobotContainer();
+
+    //We send the Field2d object to the SmartDashboard so we can visualize the robot's position on the field.
+    SmartDashboard.putData("Field", m_field);
   }
 
   @Override
-  public void robotPeriodic() {
+  public void robotPeriodic() { //Robot periodic is called every 20ms, so we can use it to update the dashboard with the robot's position and other information.
     CommandScheduler.getInstance().run();
 
-    /*
-     * This example of adding Limelight is very simple and may not be sufficient for on-field use.
-     * Users typically need to provide a standard deviation that scales with the distance to target
-     * and changes with number of tags available.
-     *
-     * This example is sufficient to show that vision integration is possible, though exact implementation
-     * of how to use vision should be tuned per-robot and to the team's specification.
-     */
+    //We get the robot's pose from the drivetrain and set it in the Field2d object to visualize it on the dashboard.
+    m_field.setRobotPose(m_robotContainer.drivetrain.getState().Pose); 
+    
     if (kUseLimelight) {
+      //We get the robot's heading and angular velocity from the drivetrain state.
       var driveState = m_robotContainer.drivetrain.getState();
       double headingDeg = driveState.Pose.getRotation().getDegrees();
       double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
 
-      LimelightHelpers.SetRobotOrientation("limelight", headingDeg, 0, 0, 0, 0, 0);
-      var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+      //We send the robot's orientation to the Limelight camera to help it calculate the position of the tags with MegaTag2.
+      //We get the robot's pose estimate back from the Limelight camera.
+      LimelightHelpers.SetRobotOrientation("limelight-right", headingDeg, 0, 0, 0, 0, 0);
+      var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");
       if (llMeasurement != null && llMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
+        // If the Limelight camera has a valid pose estimate, we add it to the drivetrain's vision measurements. PENDING: Add standar deviation to the vision measurement for better filtering.
         m_robotContainer.drivetrain.addVisionMeasurement(llMeasurement.pose, llMeasurement.timestampSeconds);
       }
     }
@@ -77,7 +85,9 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+
+  }
 
   @Override
   public void teleopExit() {}
