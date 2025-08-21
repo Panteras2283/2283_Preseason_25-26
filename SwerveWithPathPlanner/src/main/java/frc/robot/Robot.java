@@ -13,22 +13,17 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-
   private final RobotContainer m_robotContainer;
-
   private final boolean kUseLimelight = true;
-
 
   //We create the Field2d object to visualize the robot's position on the field in the dashboard.
   private final Field2d m_field = new Field2d();
 
   public Robot() {
     m_robotContainer = new RobotContainer();
-
-    //We send the Field2d object to the SmartDashboard so we can visualize the robot's position on the field.
     SmartDashboard.putData("Field", m_field);
   }
-
+     
   @Override
   public void robotPeriodic() { //Robot periodic is called every 20ms, so we can use it to update the dashboard with the robot's position and other information.
     CommandScheduler.getInstance().run();
