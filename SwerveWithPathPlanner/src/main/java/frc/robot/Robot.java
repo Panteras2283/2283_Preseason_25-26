@@ -40,10 +40,16 @@ public class Robot extends TimedRobot {
       //We send the robot's orientation to the Limelight camera to help it calculate the position of the tags with MegaTag2.
       //We get the robot's pose estimate back from the Limelight camera.
       LimelightHelpers.SetRobotOrientation("limelight-right", headingDeg, 0, 0, 0, 0, 0);
-      var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");
-      if (llMeasurement != null && llMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
+      var llrMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");
+      if (llrMeasurement != null && llrMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
         // If the Limelight camera has a valid pose estimate, we add it to the drivetrain's vision measurements. PENDING: Add standar deviation to the vision measurement for better filtering.
-        m_robotContainer.drivetrain.addVisionMeasurement(llMeasurement.pose, llMeasurement.timestampSeconds);
+        m_robotContainer.drivetrain.addVisionMeasurement(llrMeasurement.pose, llrMeasurement.timestampSeconds);
+      }
+      //We do the same for the left Limelight camera.
+      LimelightHelpers.SetRobotOrientation("limelight-left", headingDeg, 0, 0, 0, 0, 0);
+      var lllMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
+      if (lllMeasurement != null && lllMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
+        m_robotContainer.drivetrain.addVisionMeasurement(lllMeasurement.pose, lllMeasurement.timestampSeconds);
       }
     }
   }
