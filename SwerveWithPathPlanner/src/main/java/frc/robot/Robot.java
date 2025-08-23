@@ -31,6 +31,8 @@ public class Robot extends TimedRobot {
     //We get the robot's pose from the drivetrain and set it in the Field2d object to visualize it on the dashboard.
     m_field.setRobotPose(m_robotContainer.drivetrain.getState().Pose); 
     
+
+    //Limelight Pose Estimations
     if (kUseLimelight) {
       //We get the robot's heading and angular velocity from the drivetrain state.
       var driveState = m_robotContainer.drivetrain.getState();
