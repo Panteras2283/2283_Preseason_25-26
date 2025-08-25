@@ -264,12 +264,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public Command PathfindToPose(
         Pose2d targetPose,
         PathConstraints constraints,
-        double maxSpeedMetersPerSecond
+        double goalEndVelocity
     ) {
        Command pathfindingCommand = AutoBuilder.pathfindToPose(
             targetPose,
             constraints,
-            maxSpeedMetersPerSecond
+            goalEndVelocity
         );
         pathfindingCommand.addRequirements(this);
         return pathfindingCommand;
