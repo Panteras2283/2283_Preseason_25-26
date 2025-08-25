@@ -1,0 +1,43 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "5A"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LFS"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "6A"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LFS2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "6B"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

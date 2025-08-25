@@ -3,7 +3,13 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
+import com.pathplanner.lib.util.PathPlannerLogging;
+
+import com.pathplanner.lib.util.PathPlannerLogging;
+
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -24,6 +30,8 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     SmartDashboard.putData("Field", m_field);
 
+    
+
     // Add boolean Limelight buttons to SmartDashboard
     SmartDashboard.putBoolean("LL Left", kUseLimelightLeft);
     SmartDashboard.putBoolean("LL Right", kUseLimelightRight);
@@ -36,14 +44,27 @@ public class Robot extends TimedRobot {
     //We get the robot's pose from the drivetrain and set it in the Field2d object to visualize it on the dashboard.
     m_field.setRobotPose(m_robotContainer.drivetrain.getState().Pose); 
 
+    // Logging callback for target robot pose
+    PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
+    // Display Pathplanner pose
+    m_field.getObject("target pose").setPose(pose);
+    });
+
+    // Logging callback for the active path, this is sent as a list of poses
+    PathPlannerLogging.setLogActivePathCallback((poses) -> {
+    // Disply path in field2d object
+    m_field.getObject("path").setPoses(poses);
+    });
+
+
+    //We get the robot's heading and angular velocity from the drivetrain state.
     var driveState = m_robotContainer.drivetrain.getState();
     double headingDeg = driveState.Pose.getRotation().getDegrees();
     double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
-    
 
     //Limelight Pose Estimations
     if (kUseLimelightLeft) {
-      //We get the robot's heading and angular velocity from the drivetrain state.
+
       //We send the robot's orientation to the Limelight camera to help it calculate the position of the tags with MegaTag2.
       //We get the robot's pose estimate back from the Limelight camera.
       LimelightHelpers.SetRobotOrientation("limelight-right", headingDeg, 0, 0, 0, 0, 0);
@@ -55,6 +76,7 @@ public class Robot extends TimedRobot {
     }
 
     if (kUseLimelightRight) {
+
       //We do the same for the left Limelight camera.
       LimelightHelpers.SetRobotOrientation("limelight-left", headingDeg, 0, 0, 0, 0, 0);
       var lllMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
