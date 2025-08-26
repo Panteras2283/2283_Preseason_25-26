@@ -26,6 +26,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class RobotContainer {
+   
     Pose2d targetPose = new Pose2d(16.21, 4.05, Rotation2d.fromDegrees(180));
     PathConstraints constraints = new PathConstraints(1.5, 2, Units.degreesToRadians(540), Units.degreesToRadians(720));
 
@@ -53,6 +54,7 @@ public class RobotContainer {
     public RobotContainer() {
         autoChooser = AutoBuilder.buildAutoChooser("AUTO 1");
         SmartDashboard.putData("Auto Mode", autoChooser);
+    
 
         configureBindings();
 
