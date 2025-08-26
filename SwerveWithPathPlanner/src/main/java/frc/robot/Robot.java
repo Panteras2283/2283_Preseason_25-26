@@ -28,9 +28,10 @@ public class Robot extends TimedRobot {
 
   public Robot() {
     m_robotContainer = new RobotContainer();
+
+    // Add Field2d to SmartDashboard
     SmartDashboard.putData("Field", m_field);
 
-    
 
     // Add boolean Limelight buttons to SmartDashboard
     SmartDashboard.putBoolean("LL Left", kUseLimelightLeft);
