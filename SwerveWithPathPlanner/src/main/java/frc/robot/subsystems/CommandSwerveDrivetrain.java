@@ -25,10 +25,13 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-
+import java.util.HashMap;  
+import java.util.List;
+import java.util.Map;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 
 
@@ -37,6 +40,10 @@ import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
  * Subsystem so it can easily be used in command-based projects.
  */
 public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem {
+    private String selectedPoseKey = "1";
+    private final Map<String, List<Pose2d>> poseMap;
+
+
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
@@ -137,67 +144,52 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             startSimThread();
         }
         configureAutoBuilder();
+
+        poseMap = buildPoseMap();
+        SmartDashboard.putString("Selected Pose", selectedPoseKey);
     }
 
-    /**
-     * Constructs a CTRE SwerveDrivetrain using the specified constants.
-     * <p>
-     * This constructs the underlying hardware devices, so users should not construct
-     * the devices themselves. If they need the devices, they can access them through
-     * getters in the classes.
-     *
-     * @param drivetrainConstants        Drivetrain-wide constants for the swerve drive
-     * @param odometryUpdateFrequency    The frequency to run the odometry loop. If
-     *                                   unspecified or set to 0 Hz, this is 250 Hz on
-     *                                   CAN FD, and 100 Hz on CAN 2.0.
-     * @param modules                    Constants for each specific module
-     */
-    public CommandSwerveDrivetrain(
-        SwerveDrivetrainConstants drivetrainConstants,
-        double odometryUpdateFrequency,
-        SwerveModuleConstants<?, ?, ?>... modules
-    ) {
-        super(drivetrainConstants, odometryUpdateFrequency, modules);
-        if (Utils.isSimulation()) {
-            startSimThread();
-        }
-        configureAutoBuilder();
-    }
+    private Map<String, List<Pose2d>> buildPoseMap(){
+        Map<String, List<Pose2d>> map = new HashMap<>();
+        Rotation2d one = Rotation2d.fromDegrees(180);
+        Rotation2d two = Rotation2d.fromDegrees(-120);
+        Rotation2d three = Rotation2d.fromDegrees(-60);
+        Rotation2d four = Rotation2d.fromDegrees(0);
+        Rotation2d five = Rotation2d.fromDegrees(60);
+        Rotation2d six = Rotation2d.fromDegrees(120);
 
-    /**
-     * Constructs a CTRE SwerveDrivetrain using the specified constants.
-     * <p>
-     * This constructs the underlying hardware devices, so users should not construct
-     * the devices themselves. If they need the devices, they can access them through
-     * getters in the classes.
-     *
-     * @param drivetrainConstants        Drivetrain-wide constants for the swerve drive
-     * @param odometryUpdateFrequency    The frequency to run the odometry loop. If
-     *                                   unspecified or set to 0 Hz, this is 250 Hz on
-     *                                   CAN FD, and 100 Hz on CAN 2.0.
-     * @param odometryStandardDeviation  The standard deviation for odometry calculation
-     *                                  in the form [x, y, theta]ᵀ, with units in meters
-     *                                  and radians
-     * @param visionStandardDeviation   The standard deviation for vision calculation
-     *                                  in the form [x, y, theta]ᵀ, with units in meters
-     *                                  and radians
-     * @param modules                    Constants for each specific module
-     */
-    public CommandSwerveDrivetrain(
-        SwerveDrivetrainConstants drivetrainConstants,
-        double odometryUpdateFrequency,
-        Matrix<N3, N1> odometryStandardDeviation,
-        Matrix<N3, N1> visionStandardDeviation,
-        SwerveModuleConstants<?, ?, ?>... modules
-        
-    ) {
-        super(drivetrainConstants, odometryUpdateFrequency, odometryStandardDeviation, visionStandardDeviation, modules);
-        if (Utils.isSimulation()) {
-            startSimThread();
-    
-    }
+        map.put("1", List.of(
+            new Pose2d(14.386521979123565,3.8652093619149492,one),
+            new Pose2d(14.37308854121592, 4.022884768621724,one),
+            new Pose2d(14.369115437656363, 4.1617740410172575,one)
+        ));
+        map.put("2", List.of(
+            new Pose2d(13.927357713135624, 5.077049976831412,two),
+            new Pose2d(13.733098481974052, 5.177925337234092,two),
+            new Pose2d(13.596906024202786, 5.2508740999154675,two)
+        ));
+        map.put("3", List.of(
+            new Pose2d(0,0,three),
+            new Pose2d(0,0,three),
+            new Pose2d(0,0,three)
+        ));
+        map.put("4", List.of(
+            new Pose2d(0,0,four),
+            new Pose2d(0,0,four),
+            new Pose2d(0,0,four)
+        ));
+        map.put("5", List.of(
+            new Pose2d(0,0,five),
+            new Pose2d(0,0,five),
+            new Pose2d(0,0,five)
+        ));
+        map.put("6", List.of(
+            new Pose2d(13.557424187425514, 2.773494019391029,six),
+            new Pose2d(13.687912422277794, 2.8704204132661006,six),
+            new Pose2d(13.864246378035794, 2.949463964566611,six)
+        ));
 
-        configureAutoBuilder();
+        return map;
     }
 
     private void configureAutoBuilder() {
@@ -215,9 +207,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 ),
                 new PPHolonomicDriveController(
                     // PID constants for translation
-                    new PIDConstants(10, 0, 0),
+                    new PIDConstants(12, 0.001, 0),
                     // PID constants for rotation
-                    new PIDConstants(7, 0, 0)
+                    new PIDConstants(8, 0, 0)
                 ),
                 config,
                 // Assume the path needs to be flipped for Red vs Blue, this is normally the case
@@ -275,8 +267,60 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return pathfindingCommand;
     }
 
+    public Command PathfindToReef(
+        int alignmentIndex,
+        PathConstraints constraints,
+        double goalEndVelocity
+    ) {
+       Command pathfindingCommand = AutoBuilder.pathfindToPose(
+            poseMap.get(selectedPoseKey).get(alignmentIndex),
+            constraints,
+            goalEndVelocity
+        );
+        pathfindingCommand.addRequirements(this);
+        return pathfindingCommand;
+    }
+
+    private void setPoseKey(String key){
+        selectedPoseKey = key;
+        SmartDashboard.putString("Selected Pose", selectedPoseKey);
+    }
+
+    private void autoSelectPoseKey(){
+            double heading = getState().Pose.getRotation().getDegrees();
+            double face1 = 180;
+            double face2 = -120;
+            double face3 = -60;
+            double face4 = 0;
+            double face5 = 60;
+            double face6 = 120;
+
+            if (heading <= face1 +30 && heading >= face1 -30){
+                setPoseKey("1");
+            }
+            else if (heading <= face2 +30 && heading >= face2 -30){
+                setPoseKey("2");
+            }
+            else if (heading <= face3 +30 && heading >= face3 -30){
+                setPoseKey("3");
+            }
+            else if (heading <= face4 +30 && heading >= face4 -30){
+                setPoseKey("4");
+            }
+            else if (heading <= face5 +30 && heading >= face5 -30){
+                setPoseKey("5");
+            }
+            else if (heading <= face6 +30 && heading >= face6 -30){
+                setPoseKey("6");
+            }
+    }
+
+
+
     @Override
     public void periodic() {
+
+        autoSelectPoseKey();
         /*
          * Periodically try to apply the operator perspective.
          * If we haven't applied the operator perspective before, then we should apply it regardless of DS state.
@@ -284,6 +328,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
          * Otherwise, only check and apply the operator perspective if the DS is disabled.
          * This ensures driving behavior doesn't change until an explicit disable event occurs during testing.
          */
+
+
         if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
             DriverStation.getAlliance().ifPresent(allianceColor -> {
                 setOperatorPerspectiveForward(

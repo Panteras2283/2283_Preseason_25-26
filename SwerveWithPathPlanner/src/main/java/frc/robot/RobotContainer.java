@@ -15,21 +15,24 @@ import com.pathplanner.lib.path.PathConstraints;
 
 import java.util.List;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
+
 public class RobotContainer {
     
-    private String selectedPoseKey = "1";
+   
     //Pose2d targetPose = new Pose2d(16.21, 4.05, Rotation2d.fromDegrees(180));
     PathConstraints constraints = new PathConstraints(1.5, 2, Units.degreesToRadians(540), Units.degreesToRadians(720));
 
@@ -51,7 +54,9 @@ public class RobotContainer {
     private final CommandXboxController operator = new CommandXboxController(1);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-
+    private final SlewRateLimiter xLimiter = new SlewRateLimiter(7);
+    private final SlewRateLimiter yLimiter = new SlewRateLimiter(7);
+    private final SlewRateLimiter rotLimiter = new SlewRateLimiter(10);
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
    
@@ -59,18 +64,12 @@ public class RobotContainer {
     public RobotContainer() {
         autoChooser = AutoBuilder.buildAutoChooser("AUTO 1");
         SmartDashboard.putData("Auto Mode", autoChooser);
-        SmartDashboard.putString("Selected Pose", selectedPoseKey);
+        
 
         configureBindings();
 
         // Warmup PathPlanner to avoid Java pauses
         FollowPathCommand.warmupCommand().schedule();
-    }
-
-    private Command setPoseKey(String key){
-        return drivetrain.runOnce(() -> {selectedPoseKey = key;
-        SmartDashboard.putString("Selected Pose", selectedPoseKey);
-    });
     }
 
     private void configureBindings() {
@@ -79,9 +78,9 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-driver.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-driver.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(-driver.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(-yLimiter.calculate(driver.getLeftY()*MaxSpeed)) // Drive forward with negative Y (forward)
+                    .withVelocityY(-xLimiter.calculate(driver.getLeftX()*MaxSpeed)) // Drive left with negative X (left)
+                    .withRotationalRate(-rotLimiter.calculate(driver.getRightX()*MaxAngularRate)) // Drive counterclockwise with negative X (left)
             )
         );
 
@@ -106,29 +105,28 @@ public class RobotContainer {
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        driver.back().and(driver.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+       /*  driver.back().and(driver.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
         driver.back().and(driver.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
         driver.start().and(driver.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        driver.start().and(driver.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        driver.start().and(driver.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));*/
 
         // reset the field-centric heading on left bumper press
-        driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        driver.back().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-        
+        driver.leftBumper().onTrue(new ProxyCommand(()-> drivetrain.PathfindToReef(0, constraints, 0.0)));
+        driver.leftBumper().onFalse(drivetrain.getDefaultCommand());
+        driver.y().onTrue(new ProxyCommand(()-> drivetrain.PathfindToReef(1, constraints, 0.0)));
+        driver.y().onFalse(drivetrain.getDefaultCommand());
+        driver.rightBumper().onTrue(new ProxyCommand(()-> drivetrain.PathfindToReef(2, constraints, 0.0)));
+        driver.rightBumper().onFalse(drivetrain.getDefaultCommand());
         //driver.rightBumper().whileTrue(drivetrain.PathfindToPose(targetPose, constraints, 0.0));
 
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
-        operator.button(1).onTrue(setPoseKey("1"));
-        operator.button(2).onTrue(setPoseKey("2"));
-        operator.button(3).onTrue(setPoseKey("3"));
-        operator.button(4).onTrue(setPoseKey("4")); 
-        operator.button(5).onTrue(setPoseKey("5"));
-        operator.button(6).onTrue(setPoseKey("6"));
-        operator.button(7).onTrue(setPoseKey("FS1"));
-        operator.button(8).onTrue(setPoseKey("FS2"));
-        operator.button(9).onTrue(setPoseKey("PR"));
+        //operator.button(7).onTrue(setPoseKey("FS1"));
+        //operator.button(8).onTrue(setPoseKey("FS2"));
+        //operator.button(9).onTrue(setPoseKey("PR"));
     }
 
     public Command getAutonomousCommand() {
