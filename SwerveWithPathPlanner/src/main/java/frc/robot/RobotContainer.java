@@ -115,10 +115,13 @@ public class RobotContainer {
 
         driver.leftBumper().onTrue(new ProxyCommand(()-> drivetrain.PathfindToReef(0, constraints, 0.0)));
         driver.leftBumper().onFalse(drivetrain.getDefaultCommand());
+
         driver.y().onTrue(new ProxyCommand(()-> drivetrain.PathfindToReef(1, constraints, 0.0)));
         driver.y().onFalse(drivetrain.getDefaultCommand());
+
         driver.rightBumper().onTrue(new ProxyCommand(()-> drivetrain.PathfindToReef(2, constraints, 0.0)));
         driver.rightBumper().onFalse(drivetrain.getDefaultCommand());
+        
         //driver.rightBumper().whileTrue(drivetrain.PathfindToPose(targetPose, constraints, 0.0));
 
 
