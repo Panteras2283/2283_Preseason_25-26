@@ -34,7 +34,7 @@ public class RobotContainer {
     
    
     //Pose2d targetPose = new Pose2d(16.21, 4.05, Rotation2d.fromDegrees(180));
-    PathConstraints constraints = new PathConstraints(1.5, 2, Units.degreesToRadians(540), Units.degreesToRadians(720));
+    PathConstraints constraints = new PathConstraints(3, 2, Units.degreesToRadians(540), Units.degreesToRadians(720));
 
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.55).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
@@ -113,13 +113,13 @@ public class RobotContainer {
         // reset the field-centric heading on left bumper press
         driver.back().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-        driver.leftBumper().onTrue(new ProxyCommand(()-> drivetrain.PathfindToReef(0, constraints, 0.0)));
+        driver.leftBumper().onTrue(new ProxyCommand(()-> drivetrain.PathfindToReefpath(0, constraints, 0.0)));
         driver.leftBumper().onFalse(drivetrain.getDefaultCommand());
 
-        driver.y().onTrue(new ProxyCommand(()-> drivetrain.PathfindToReef(1, constraints, 0.0)));
+        driver.y().onTrue(new ProxyCommand(()-> drivetrain.PathfindToReefpath(1, constraints, 0.0)));
         driver.y().onFalse(drivetrain.getDefaultCommand());
 
-        driver.rightBumper().onTrue(new ProxyCommand(()-> drivetrain.PathfindToReef(2, constraints, 0.0)));
+        driver.rightBumper().onTrue(new ProxyCommand(()-> drivetrain.PathfindToReefpath(2, constraints, 0.0)));
         driver.rightBumper().onFalse(drivetrain.getDefaultCommand());
         
         //driver.rightBumper().whileTrue(drivetrain.PathfindToPose(targetPose, constraints, 0.0));

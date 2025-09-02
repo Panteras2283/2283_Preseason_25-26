@@ -4,6 +4,8 @@ import static edu.wpi.first.units.Units.*;
 
 import java.util.function.Supplier;
 
+import org.json.simple.parser.ParseException;
+
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
@@ -15,6 +17,8 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.FileVersionException;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -29,6 +33,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+
+import java.io.IOException;
 import java.util.HashMap;  
 import java.util.List;
 import java.util.Map;
@@ -42,6 +48,7 @@ import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem {
     private String selectedPoseKey = "1";
     private final Map<String, List<Pose2d>> poseMap;
+    private final Map<String, List<PathPlannerPath>> pathMap;
 
 
     private static final double kSimLoopPeriod = 0.005; // 5 ms
@@ -146,6 +153,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         configureAutoBuilder();
 
         poseMap = buildPoseMap();
+        pathMap = buildPathMap();
+
         SmartDashboard.putString("Selected Pose", selectedPoseKey);
     }
 
@@ -192,6 +201,110 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return map;
     }
 
+    private Map<String, List<PathPlannerPath>> buildPathMap(){
+        Map<String, List<PathPlannerPath>> map = new HashMap<>();
+        //PathPlannerPath one_L_R = PathPlannerPath.fromPathFile("1_L_R");
+      
+        try {
+            map.put("1", List.of(
+                PathPlannerPath.fromPathFile("1_L"),
+                PathPlannerPath.fromPathFile("1_C"),
+                PathPlannerPath.fromPathFile("1_R")
+            ));
+        } catch (FileVersionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        try {
+            map.put("2", List.of(
+                PathPlannerPath.fromPathFile("2_L"),
+                PathPlannerPath.fromPathFile("2_C"),
+                PathPlannerPath.fromPathFile("2_R")
+            ));
+        } catch (FileVersionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        try {
+            map.put("3", List.of(
+                PathPlannerPath.fromPathFile("1_L"),
+                PathPlannerPath.fromPathFile("1_C"),
+                PathPlannerPath.fromPathFile("1_R")
+            ));
+        } catch (FileVersionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        try {
+            map.put("4", List.of(
+                PathPlannerPath.fromPathFile("1_L"),
+                PathPlannerPath.fromPathFile("1_C"),
+                PathPlannerPath.fromPathFile("1_R")
+            ));
+        } catch (FileVersionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        try {
+            map.put("5", List.of(
+                PathPlannerPath.fromPathFile("1_L"),
+                PathPlannerPath.fromPathFile("1_C"),
+                PathPlannerPath.fromPathFile("1_R")
+            ));
+        } catch (FileVersionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        try {
+            map.put("6", List.of(
+                PathPlannerPath.fromPathFile("6_L"),
+                PathPlannerPath.fromPathFile("6_C"),
+                PathPlannerPath.fromPathFile("6_R")
+            ));
+        } catch (FileVersionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return map;
+    }
+
     private void configureAutoBuilder() {
         try {
             var config = RobotConfig.fromGUISettings();
@@ -207,9 +320,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 ),
                 new PPHolonomicDriveController(
                     // PID constants for translation
-                    new PIDConstants(12, 0.001, 0),
+                    new PIDConstants(3.5, 0, 0),
                     // PID constants for rotation
-                    new PIDConstants(8, 0, 0)
+                    new PIDConstants(2.0, 0, 0)
                 ),
                 config,
                 // Assume the path needs to be flipped for Red vs Blue, this is normally the case
@@ -281,6 +394,19 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return pathfindingCommand;
     }
 
+    public Command PathfindToReefpath(
+        int alignmentIndex,
+        PathConstraints constraints,
+        double goalEndVelocity
+    ) {
+       Command pathfindingCommand = AutoBuilder.pathfindThenFollowPath(
+            pathMap.get(selectedPoseKey).get(alignmentIndex),
+            constraints
+        );
+        pathfindingCommand.addRequirements(this);
+        return pathfindingCommand;
+    }
+
     private void setPoseKey(String key){
         selectedPoseKey = key;
         SmartDashboard.putString("Selected Pose", selectedPoseKey);
@@ -294,7 +420,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             double face4 = 0;
             double face5 = 60;
             double face6 = 120;
-
+        if (DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Red){
             if (heading <= face1 +30 && heading >= face1 -30){
                 setPoseKey("1");
             }
@@ -313,6 +439,28 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             else if (heading <= face6 +30 && heading >= face6 -30){
                 setPoseKey("6");
             }
+        }
+        else{
+            if (heading <= face1 +30 && heading >= face1 -30){
+                setPoseKey("4");
+            }
+            else if (heading <= face2 +30 && heading >= face2 -30){
+                setPoseKey("5");
+            }
+            else if (heading <= face3 +30 && heading >= face3 -30){
+                setPoseKey("6");
+            }
+            else if (heading <= face4 +30 && heading >= face4 -30){
+                setPoseKey("1");
+            }
+            else if (heading <= face5 +30 && heading >= face5 -30){
+                setPoseKey("2");
+            }
+            else if (heading <= face6 +30 && heading >= face6 -30){
+                setPoseKey("3");
+            }
+
+        }
     }
 
 
