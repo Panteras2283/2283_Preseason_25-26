@@ -111,15 +111,15 @@ public class RobotContainer {
         driver.start().and(driver.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));*/
 
         // reset the field-centric heading on left bumper press
-        driver.back().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        driver.back().whileTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-        driver.leftBumper().onTrue(new ProxyCommand(()-> drivetrain.PathfindToReefpath(0, constraints, 0.0)));
+        driver.leftBumper().whileTrue(new ProxyCommand(()-> drivetrain.PathfindToReefpath(0, constraints, 0.0)));
         driver.leftBumper().onFalse(drivetrain.getDefaultCommand());
 
-        driver.y().onTrue(new ProxyCommand(()-> drivetrain.PathfindToReefpath(1, constraints, 0.0)));
+        driver.y().whileTrue(new ProxyCommand(()-> drivetrain.PathfindToReefpath(1, constraints, 0.0)));
         driver.y().onFalse(drivetrain.getDefaultCommand());
 
-        driver.rightBumper().onTrue(new ProxyCommand(()-> drivetrain.PathfindToReefpath(2, constraints, 0.0)));
+        driver.rightBumper().whileTrue(new ProxyCommand(()-> drivetrain.PathfindToReefpath(2, constraints, 0.0)));
         driver.rightBumper().onFalse(drivetrain.getDefaultCommand());
         
         //driver.rightBumper().whileTrue(drivetrain.PathfindToPose(targetPose, constraints, 0.0));

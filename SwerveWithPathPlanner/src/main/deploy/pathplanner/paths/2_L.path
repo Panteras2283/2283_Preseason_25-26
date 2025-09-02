@@ -45,9 +45,9 @@
     "rotation": 59.958752067902424
   },
   "reversed": false,
-  "folder": "Reef_RED",
+  "folder": "Reef",
   "idealStartingState": {
-    "velocity": 1.0,
+    "velocity": 0.5,
     "rotation": 59.78183401804509
   },
   "useDefaultConstraints": true
