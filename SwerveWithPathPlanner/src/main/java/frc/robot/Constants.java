@@ -18,6 +18,7 @@ import edu.wpi.first.math.util.Units;
 /** Add your docs here. */
 public class Constants {
     public static final class ClawConstants {
+            public static final int clawElbowID = 25;
             public static final int clawLeftID = 8;
             public static final int clawRightID = 9;
             public static final int sensorUpperID = 2;
@@ -34,7 +35,22 @@ public class Constants {
             public static final double KMaxOutput = 1.0;
             public static final double maxVel = 1;
             public static final double maxAcc = 1;
-           // public static final double  = 0.05;
+            public static final double allErr = 1;
+
+
+
+            public static final double default_pos = 3.3;
+            public static final double feedCoral_pos = 0;
+            public static final double groundAlgae_pos = 0;
+            public static final double L1_pos = 0;
+            public static final double L2_pos = 0; 
+            public static final double L3_pos = 0;
+            public static final double L4_pos = 0;
+            public static final double P_pos = 0;
+            public static final double N_pos = 0;
+            public static final double A1_pos = 0;
+            public static final double A2_pos = 0;
+
     }
 
 }

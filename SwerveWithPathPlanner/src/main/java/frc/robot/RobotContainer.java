@@ -27,12 +27,13 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
-
+import frc.robot.Constants;
+import frc.robot.subsystems.*;
+import frc.robot.commands.*;
 
 public class RobotContainer {
     
-   
+
     //Pose2d targetPose = new Pose2d(16.21, 4.05, Rotation2d.fromDegrees(180));
     PathConstraints constraints = new PathConstraints(3, 2, Units.degreesToRadians(540), Units.degreesToRadians(720));
 
@@ -53,12 +54,16 @@ public class RobotContainer {
     private final CommandXboxController driver = new CommandXboxController(0);
     private final CommandXboxController operator = new CommandXboxController(1);
 
+    
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     private final SlewRateLimiter xLimiter = new SlewRateLimiter(7);
     private final SlewRateLimiter yLimiter = new SlewRateLimiter(7);
     private final SlewRateLimiter rotLimiter = new SlewRateLimiter(10);
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
+
+    /*Subsystems */
+    private final Claw s_Claw = new Claw();
    
 
     public RobotContainer() {
@@ -73,6 +78,8 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
+
+        s_Claw.setDefaultCommand(new Default_Claw(s_Claw));
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
@@ -115,7 +122,6 @@ public class RobotContainer {
 
         driver.leftBumper().onTrue(new ProxyCommand(()-> drivetrain.PathfindToReefpath(0, constraints, 0.0)));
         driver.leftBumper().onFalse(drivetrain.getDefaultCommand());
-
         driver.y().onTrue(new ProxyCommand(()-> drivetrain.PathfindToReefpath(1, constraints, 0.0)));
         driver.y().onFalse(drivetrain.getDefaultCommand());
 
@@ -130,6 +136,8 @@ public class RobotContainer {
         //operator.button(7).onTrue(setPoseKey("FS1"));
         //operator.button(8).onTrue(setPoseKey("FS2"));
         //operator.button(9).onTrue(setPoseKey("PR"));
+        operator.y().onTrue(new Test1(s_Claw));
+        operator.y().onFalse(s_Claw.getDefaultCommand());
     }
 
     public Command getAutonomousCommand() {
