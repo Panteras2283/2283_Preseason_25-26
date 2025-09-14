@@ -37,8 +37,6 @@ public class Constants {
             public static final double maxAcc = 1;
             public static final double allErr = 1;
 
-
-
             public static final double default_pos = 3.3;
             public static final double feedCoral_pos = 0;
             public static final double groundAlgae_pos = 0;

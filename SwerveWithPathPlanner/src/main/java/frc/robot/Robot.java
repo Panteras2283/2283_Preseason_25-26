@@ -65,7 +65,6 @@ public class Robot extends TimedRobot {
 
     //Limelight Pose Estimations
     if (kUseLimelightLeft) {
-
       //We send the robot's orientation to the Limelight camera to help it calculate the position of the tags with MegaTag2.
       //We get the robot's pose estimate back from the Limelight camera.
       LimelightHelpers.SetRobotOrientation("limelight-right", headingDeg, 0, 0, 0, 0, 0);
@@ -77,7 +76,6 @@ public class Robot extends TimedRobot {
     }
 
     if (kUseLimelightRight) {
-
       //We do the same for the left Limelight camera.
       LimelightHelpers.SetRobotOrientation("limelight-left", headingDeg, 0, 0, 0, 0, 0);
       var lllMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");

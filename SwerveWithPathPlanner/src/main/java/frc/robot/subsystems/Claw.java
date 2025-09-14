@@ -69,6 +69,7 @@ public class Claw extends SubsystemBase {
      .outputRange(Constants.ClawConstants.KMinOutput, Constants.ClawConstants.KMaxOutput)
      .velocityFF(Constants.ClawConstants.clawKF)
      .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+     
     motorConfig.closedLoop.maxMotion
       .maxVelocity(Constants.ClawConstants.maxVel)
       .maxAcceleration(Constants.ClawConstants.maxAcc)
