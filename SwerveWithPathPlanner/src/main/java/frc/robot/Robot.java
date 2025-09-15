@@ -36,6 +36,31 @@ public class Robot extends TimedRobot {
     // Add boolean Limelight buttons to SmartDashboard
     SmartDashboard.putBoolean("LL Left", kUseLimelightLeft);
     SmartDashboard.putBoolean("LL Right", kUseLimelightRight);
+
+    var driveState = m_robotContainer.drivetrain.getState();
+
+    // Add Swerve Drive states to SmartDashboard
+    SmartDashboard.putData("Swerve Drive", new Sendable() {
+      @Override
+      public void initSendable(SendableBuilder builder) {
+      builder.setSmartDashboardType("SwerveDrive");
+
+      builder.addDoubleProperty("Front Left Angle", () -> driveState.ModuleStates[0].angle.getRadians(), null);
+      builder.addDoubleProperty("Front Left Velocity", () -> driveState.ModuleStates[0].speedMetersPerSecond, null);
+
+      builder.addDoubleProperty("Front Right Angle", () -> driveState.ModuleStates[1].angle.getRadians(), null);
+      builder.addDoubleProperty("Front Right Velocity", () -> driveState.ModuleStates[1].speedMetersPerSecond, null);
+
+      builder.addDoubleProperty("Back Left Angle", () -> driveState.ModuleStates[2].angle.getRadians(), null);
+      builder.addDoubleProperty("Back Left Velocity", () -> driveState.ModuleStates[2].speedMetersPerSecond, null);
+
+      builder.addDoubleProperty("Back Right Angle", () -> driveState.ModuleStates[3].angle.getRadians(), null);
+      builder.addDoubleProperty("Back Right Velocity", () -> driveState.ModuleStates[3].speedMetersPerSecond, null);
+
+      builder.addDoubleProperty("Robot Angle", () -> (Math.PI) + driveState.Pose.getRotation().getRadians(), null);
+  }
+  });
+  
   }
      
   @Override

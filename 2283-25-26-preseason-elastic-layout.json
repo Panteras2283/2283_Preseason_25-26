@@ -213,6 +213,85 @@
           }
         ]
       }
+    },
+    {
+      "name": "Subsystems",
+      "grid_layout": {
+        "layouts": [],
+        "containers": [
+          {
+            "title": "Swerve Drive",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 512.0,
+            "height": 512.0,
+            "type": "SwerveDrive",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve Drive",
+              "period": 0.06,
+              "show_robot_rotation": true,
+              "rotation_unit": "Radians"
+            }
+          },
+          {
+            "title": "Elbow pos",
+            "x": 512.0,
+            "y": 0.0,
+            "width": 384.0,
+            "height": 512.0,
+            "type": "Radial Gauge",
+            "properties": {
+              "topic": "/SmartDashboard/Elbow pos",
+              "period": 0.06,
+              "data_type": "double",
+              "start_angle": 0.0,
+              "end_angle": 160.0,
+              "min_value": 0.0,
+              "max_value": 15.0,
+              "number_of_labels": 8,
+              "wrap_value": false,
+              "show_pointer": true,
+              "show_ticks": true
+            }
+          },
+          {
+            "title": "Claw Left Vel",
+            "x": 896.0,
+            "y": 0.0,
+            "width": 128.0,
+            "height": 256.0,
+            "type": "Number Bar",
+            "properties": {
+              "topic": "/SmartDashboard/Claw Left Vel",
+              "period": 0.06,
+              "data_type": "double",
+              "min_value": -100.0,
+              "max_value": 100.0,
+              "divisions": 5,
+              "inverted": false,
+              "orientation": "vertical"
+            }
+          },
+          {
+            "title": "Claw Right Vel",
+            "x": 1024.0,
+            "y": 0.0,
+            "width": 128.0,
+            "height": 256.0,
+            "type": "Number Bar",
+            "properties": {
+              "topic": "/SmartDashboard/Claw Right Vel",
+              "period": 0.06,
+              "data_type": "double",
+              "min_value": -100.0,
+              "max_value": 100.0,
+              "divisions": 5,
+              "inverted": false,
+              "orientation": "vertical"
+            }
+          }
+        ]
+      }
     }
   ]
 }

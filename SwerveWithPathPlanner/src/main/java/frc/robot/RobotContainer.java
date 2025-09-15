@@ -63,7 +63,7 @@ public class RobotContainer {
     private final SendableChooser<Command> autoChooser;
 
     /*Subsystems */
-    private final Claw s_Claw = new Claw();
+   private final Claw s_Claw = new Claw();
    
 
     public RobotContainer() {
