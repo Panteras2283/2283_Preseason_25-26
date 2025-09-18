@@ -1,16 +1,22 @@
-/*// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Robot;
 
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.sim.TalonFXSimState;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.sim.SparkFlexSim;
+import com.revrobotics.sim.SparkMaxSim;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
@@ -26,8 +32,6 @@ public class Elevator extends SubsystemBase {
 
   private SparkMax elevatorLeft = new SparkMax(Constants.ElevatorConstants.elevatorLeftID, MotorType.kBrushless);
   private SparkMax elevatorRight = new SparkMax(Constants.ElevatorConstants.elevatorRightID, MotorType.kBrushless);
-  private final DigitalInput SensorUpper = new DigitalInput(Constants.ClawConstants.sensorUpperID);
-  private final DigitalInput SensorLower = new DigitalInput(Constants.ClawConstants.sensorLowerID);
 
   private SparkMaxConfig leftElevatorConfig = new SparkMaxConfig();
   private SparkClosedLoopController leftElevatorController = elevatorLeft.getClosedLoopController();
@@ -37,6 +41,17 @@ public class Elevator extends SubsystemBase {
   private SparkMaxConfig rightElevatorConfig = new SparkMaxConfig();
   private SparkClosedLoopController rightElevatorController = elevatorRight.getClosedLoopController();
   private RelativeEncoder rightElevatorEncoder = elevatorRight.getEncoder();
+
+  // Simulation-specific objects
+  private SparkMaxSim elevatorSimLeft;
+  private SparkMaxSim elevatorSimRight;
+  private double leftSimTargetPosition = 0;
+  private double rightSimTargetPosition = 0;
+  private double m_leftSimCurrentPosition = 0; // The actual simulated position
+  private double m_rightSimCurrentPosition = 0; // The actual simulated position
+  private static final double SIM_SPEED = 50.0; // Units per second, adjust as needed
+  private double leftMotorTargetVelocity = 0;
+  private double rightMotorTargetVelocity = 0;
 
 
   public Elevator() {
@@ -67,31 +82,48 @@ public class Elevator extends SubsystemBase {
     rightElevatorConfig.encoder.positionConversionFactor(1);
     elevatorRight.configure(rightElevatorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
+    if (RobotBase.isSimulation()) {
+      elevatorSimLeft = new SparkMaxSim(elevatorLeft, DCMotor.getNeoVortex(1));
+      elevatorSimRight = new SparkMaxSim(elevatorRight, DCMotor.getNeoVortex(1));
+    }
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Left Position", leftElevatorEncoder.getPosition());
-    SmartDashboard.putNumber("Right Position", rightElevatorEncoder.getPosition());
-    SmartDashboard.putNumber("Left Velocity", leftElevatorEncoder.getVelocity());
-    SmartDashboard.putNumber("Right Velocity", rightElevatorEncoder.getVelocity());
-    SmartDashboard.putNumber("Left Output", elevatorLeft.getAppliedOutput());
-    SmartDashboard.putNumber("Right Output", elevatorRight.getAppliedOutput());
-    SmartDashboard.putBoolean("Upper Sensor", SensorUpper.get());
-    SmartDashboard.putBoolean("Lower Sensor", SensorLower.get());
 
+    if (RobotBase.isReal()){
+    // This method will be called once per scheduler run
+      SmartDashboard.putNumber("Left Elevator Position", leftElevatorEncoder.getPosition()*-1);
+      SmartDashboard.putNumber("Right Elevator Position", rightElevatorEncoder.getPosition());
+      SmartDashboard.putNumber("Left Elevator Velocity", leftElevatorEncoder.getVelocity());
+      SmartDashboard.putNumber("Right Elevator Velocity", rightElevatorEncoder.getVelocity());
+      SmartDashboard.putNumber("Left Elevator Output", elevatorLeft.getAppliedOutput());
+      SmartDashboard.putNumber("Right Elevator Output", elevatorRight.getAppliedOutput());
+    
+    }
+    if (RobotBase.isSimulation()) {
+      elevatorSimLeft.setPosition(rightSimTargetPosition);
+      elevatorSimRight.setPosition(leftSimTargetPosition);
+
+      SmartDashboard.putNumber("Left Elevator Position", elevatorSimLeft.getPosition()*-1);
+      SmartDashboard.putNumber("Right Elevator Position", elevatorSimRight.getPosition()); 
+    }
   }
 
   public void setPosition(double left_pos, double right_pos){
     leftElevatorController.setReference(left_pos, ControlType.kPosition);
     rightElevatorController.setReference(right_pos, ControlType.kPosition);
+
+    if(RobotBase.isSimulation()){
+      leftSimTargetPosition = left_pos;
+      rightSimTargetPosition = right_pos;
+    }
   }
 
   public double getLeftPos(){
     return leftElevatorEncoder.getPosition();
-  }
 
+  }
   public double getRightPos(){
     return rightElevatorEncoder.getPosition();
   }
@@ -112,4 +144,3 @@ public class Elevator extends SubsystemBase {
     elevatorRight.set(0);
   }
 }
-*/

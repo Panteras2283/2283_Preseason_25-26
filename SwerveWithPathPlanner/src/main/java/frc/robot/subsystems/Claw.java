@@ -93,13 +93,12 @@ public class Claw extends SubsystemBase {
     var talonFXConfigs = new TalonFXConfiguration();
 
     var slot0Configs = talonFXConfigs.Slot0;
-    slot0Configs.kS = 0.1;
-    slot0Configs.kV = 0.12;
-    slot0Configs.kA = 0.0012;
-
-    slot0Configs.kP = 0.21;
-    slot0Configs.kI = 0.0;
-    slot0Configs.kD = 0.0;
+    slot0Configs.kP = Constants.ClawConstants.slot0P;
+    slot0Configs.kI = Constants.ClawConstants.slot0I;
+    slot0Configs.kD = Constants.ClawConstants.slot0D;
+    slot0Configs.kS = Constants.ClawConstants.slot0S;
+    slot0Configs.kV = Constants.ClawConstants.slot0V;
+    slot0Configs.kA = Constants.ClawConstants.slot0A;
 
     clawLeft.getConfigurator().apply(slot0Configs);
     clawRight.getConfigurator().apply(slot0Configs);

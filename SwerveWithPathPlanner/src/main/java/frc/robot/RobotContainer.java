@@ -64,7 +64,8 @@ public class RobotContainer {
 
     /*Subsystems */
    private final Claw s_Claw = new Claw();
-   
+   private final Elevator s_Elevator = new Elevator();
+
 
     public RobotContainer() {
         autoChooser = AutoBuilder.buildAutoChooser("AUTO 1");
@@ -82,6 +83,8 @@ public class RobotContainer {
         s_Claw.setDefaultCommand(new Default_Claw(s_Claw));
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
+        s_Elevator.setDefaultCommand(new Default_Elevator(s_Elevator));
+
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
@@ -138,7 +141,11 @@ public class RobotContainer {
         //operator.button(9).onTrue(setPoseKey("PR"));
         operator.y().onTrue(new Test1(s_Claw));
         operator.y().onFalse(s_Claw.getDefaultCommand());
+        operator.x().onTrue(new TestElevator1(s_Elevator));
+        operator.x().onFalse(s_Elevator.getDefaultCommand());
     }
+
+
 
     public Command getAutonomousCommand() {
         /* Run the path selected from the auto chooser */

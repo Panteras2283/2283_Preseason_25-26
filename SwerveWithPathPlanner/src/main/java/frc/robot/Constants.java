@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -37,6 +38,8 @@ public class Constants {
             public static final double maxAcc = 1;
             public static final double allErr = 1;
 
+
+
             public static final double default_pos = 3.3;
             public static final double feedCoral_pos = 0;
             public static final double groundAlgae_pos = 0;
@@ -49,6 +52,58 @@ public class Constants {
             public static final double A1_pos = 0;
             public static final double A2_pos = 0;
 
+            public static final double slot0S = 0.1;
+            public static final double slot0V = 0.12;
+            public static final double slot0A = 0.0012;
+            public static final double slot0P = 0.21;
+            public static final double slot0I = 0.0;
+            public static final double slot0D = 0.0;
+
+    }
+
+    public static final class ElevatorConstants {
+        public static final int elevatorLeftID = 17;
+        public static final int elevatorRightID = 10;
+        public static final double elevatorKP = 0.1;
+        public static final double elevatorKI = 0.0000075;
+        public static final double elevatorKD = 0.0;
+        public static final double elevatorKFF = 0.0;
+        public static final double KMinOutput = -1.0;
+        public static final double KMaxOutput = 1.0;
+        public static final double maxVel = 1;
+        public static final double maxAcc = 1;
+        public static final double allErr = 1;
+
+        //LEFT MOTOR POSITIONS
+        public static final double leftDefault_pos = 0;
+        public static final double leftFS_pos = 0;
+        public static final double leftFloorAlgae_pos = 0;
+
+        public static final double leftL1_pos = 0;
+        public static final double leftL2_pos = 0;
+        public static final double leftL3_pos = 0;
+        public static final double leftL4_pos = 0;
+
+        public static final double leftProcessor_pos = 0;
+        public static final double leftNet_pos = 0;
+        public static final double leftA1_pos = 0;
+        public static final double leftA2_pos = 0;
+
+        //RIGHT MOTOR POSITIONS
+        public static final double rightDefault_pos = 0;
+        public static final double rightFS_pos = 0;
+        public static final double rightFloorAlgae_pos = 0;
+
+        public static final double rightL1_pos = 0;
+        public static final double rightL2_pos = 0;
+        public static final double rightL3_pos = 0;
+        public static final double rightL4_pos = 0;
+
+        public static final double rightProcessor_pos = 0;
+        public static final double rightNet_pos = 0;
+        public static final double rightA1_pos = 0;
+        public static final double rightA2_pos = 0;
+        
     }
 
 }
