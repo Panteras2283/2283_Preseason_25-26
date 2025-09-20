@@ -15,6 +15,9 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import frc.robot.Constants;
 
 
 public class Robot extends TimedRobot {
@@ -22,9 +25,12 @@ public class Robot extends TimedRobot {
   private final RobotContainer m_robotContainer;
   private final boolean kUseLimelightLeft = true;
   private final boolean kUseLimelightRight = true;
+  
 
   //We create the Field2d object to visualize the robot's position on the field in the dashboard.
   private final Field2d m_field = new Field2d();
+
+  
 
   public Robot() {
     m_robotContainer = new RobotContainer();
@@ -67,6 +73,8 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() { //Robot periodic is called every 20ms, so we can use it to update the dashboard with the robot's position and other information.
     CommandScheduler.getInstance().run();
 
+
+
     //We get the robot's pose from the drivetrain and set it in the Field2d object to visualize it on the dashboard.
     m_field.setRobotPose(m_robotContainer.drivetrain.getState().Pose); 
 
@@ -108,6 +116,9 @@ public class Robot extends TimedRobot {
         m_robotContainer.drivetrain.addVisionMeasurement(lllMeasurement.pose, lllMeasurement.timestampSeconds);
       }
     }
+
+    
+
   }
 
   @Override

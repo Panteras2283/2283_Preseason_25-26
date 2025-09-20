@@ -26,8 +26,9 @@ public class Test1 extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    s_Claw.setPosition(9);
+    s_Claw.setPosition(6);
     s_Claw.Claw_FS();
+    s_Claw.WristUp();
   }
 
   // Called once the command ends or is interrupted.

@@ -9,6 +9,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -57,11 +58,17 @@ public class Claw extends SubsystemBase {
   private SparkClosedLoopController motorController = clawElbow.getClosedLoopController();
   public final RelativeEncoder motorEncoder = clawElbow.getEncoder();
 
+  /* Pneumatics */
+  private final Compressor m_compressor = new Compressor(PneumaticsModuleType.CTREPCM);
   private final DoubleSolenoid wristSolenoid =
   new DoubleSolenoid(Constants.ClawConstants.PH_CAN_ID, 
   PneumaticsModuleType.CTREPCM, 
   Constants.ClawConstants.solenoidForwardChannel, 
   Constants.ClawConstants.solenoidReverseChannel);
+
+
+
+
 
   // Simulation-specific objects
   private SparkFlexSim clawElbowSim;
@@ -75,6 +82,8 @@ public class Claw extends SubsystemBase {
 
   /** Creates a new Claw. */
   public Claw() {
+    m_compressor.enableDigital();
+
     motorConfig.closedLoop
       .p(Constants.ClawConstants.clawKP)
       .i(Constants.ClawConstants.clawKI)
@@ -121,6 +130,10 @@ public class Claw extends SubsystemBase {
       SmartDashboard.putBoolean("Lower Sensor", SensorLower.get());
       SmartDashboard.putNumber("Claw Left Vel", clawLeft.getVelocity().getValueAsDouble());
       SmartDashboard.putNumber("Claw Right Vel", clawRight.getVelocity().getValueAsDouble());
+      SmartDashboard.putNumber("Compressor Current", m_compressor.getCurrent());
+      SmartDashboard.putBoolean("Compressor Enabled", m_compressor.isEnabled());
+      SmartDashboard.putBoolean("Pressure Switch", m_compressor.getPressureSwitchValue());
+
     }
     if (RobotBase.isSimulation()){
        // Move the simulated position towards the target

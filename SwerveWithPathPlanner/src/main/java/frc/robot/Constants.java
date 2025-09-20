@@ -24,7 +24,7 @@ public class Constants {
             public static final int clawRightID = 9;
             public static final int sensorUpperID = 2;
             public static final int sensorLowerID = 1;
-            public static final int PH_CAN_ID = 6;
+            public static final int PH_CAN_ID = 40;
             public static final int solenoidForwardChannel = 7;
             public static final int solenoidReverseChannel = 6;
 
