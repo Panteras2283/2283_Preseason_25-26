@@ -130,9 +130,9 @@ public class Claw extends SubsystemBase {
       SmartDashboard.putBoolean("Lower Sensor", SensorLower.get());
       SmartDashboard.putNumber("Claw Left Vel", clawLeft.getVelocity().getValueAsDouble());
       SmartDashboard.putNumber("Claw Right Vel", clawRight.getVelocity().getValueAsDouble());
-      SmartDashboard.putNumber("Compressor Current", m_compressor.getCurrent());
+      /*SmartDashboard.putNumber("Compressor Current", m_compressor.getCurrent());
       SmartDashboard.putBoolean("Compressor Enabled", m_compressor.isEnabled());
-      SmartDashboard.putBoolean("Pressure Switch", m_compressor.getPressureSwitchValue());
+      SmartDashboard.putBoolean("Pressure Switch", m_compressor.getPressureSwitchValue());*/
 
     }
     if (RobotBase.isSimulation()){
