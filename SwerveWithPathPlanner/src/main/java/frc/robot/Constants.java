@@ -45,7 +45,7 @@ public class Constants {
             public static final double groundAlgae_pos = 0;
             public static final double L1_pos = 0;
             public static final double L2_pos = 7.5; 
-            public static final double L3_pos = 0;
+            public static final double L3_pos = 7.5;
             public static final double L4_pos = 0;
             public static final double P_pos = 0;
             public static final double N_pos = 0;
@@ -81,7 +81,7 @@ public class Constants {
 
         public static final double leftL1_pos = 0;
         public static final double leftL2_pos = 19.38;
-        public static final double leftL3_pos = 0;
+        public static final double leftL3_pos = 30.29;
         public static final double leftL4_pos = 0;
 
         public static final double leftProcessor_pos = 0;
@@ -96,7 +96,7 @@ public class Constants {
 
         public static final double rightL1_pos = 0;
         public static final double rightL2_pos = -19.38;
-        public static final double rightL3_pos = 0;
+        public static final double rightL3_pos = -30.29;
         public static final double rightL4_pos = 0;
 
         public static final double rightProcessor_pos = 0;

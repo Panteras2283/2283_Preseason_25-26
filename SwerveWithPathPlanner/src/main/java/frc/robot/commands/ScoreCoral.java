@@ -40,8 +40,18 @@ public class ScoreCoral extends Command {
       if (s_Claw.getPosition() >= claw_pos -0.1 && s_Claw.getPosition() <= claw_pos + 0.1){
         if (left_pos == Constants.ElevatorConstants.leftL1_pos){
           s_Claw.Claw_ReleaseL1();
+          if (s_Claw.getUpperSensor() == true || s_Claw.getLowerSensor() == true){
+            s_Claw.Claw_Stop();
+            s_Elevator.setPosition(Constants.ElevatorConstants.leftDefault_pos, Constants.ElevatorConstants.rightDefault_pos);
+            s_Claw.setPosition(Constants.ClawConstants.default_pos);
+          }
         } else {
           s_Claw.Claw_Release();
+          if (s_Claw.getUpperSensor() == true || s_Claw.getLowerSensor() == true){
+            s_Claw.Claw_Stop();
+            s_Elevator.setPosition(Constants.ElevatorConstants.leftDefault_pos, Constants.ElevatorConstants.rightDefault_pos);
+            s_Claw.setPosition(Constants.ClawConstants.default_pos);
+          }
         }
       }
     }

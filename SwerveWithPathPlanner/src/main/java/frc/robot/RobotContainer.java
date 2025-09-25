@@ -155,6 +155,13 @@ public class RobotContainer {
         Constants.ClawConstants.L2_pos));
         operator.b().onFalse(s_Claw.getDefaultCommand());
         operator.b().onFalse(s_Elevator.getDefaultCommand());
+        
+        operator.y().onTrue(new ScoreCoral(s_Elevator, s_Claw, 
+        Constants.ElevatorConstants.leftL3_pos, 
+        Constants.ElevatorConstants.rightL3_pos,
+        Constants.ClawConstants.L3_pos));
+        operator.y().onFalse(s_Claw.getDefaultCommand());
+        operator.y().onFalse(s_Elevator.getDefaultCommand());
     }
 
 
