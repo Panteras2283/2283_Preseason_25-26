@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
@@ -170,6 +171,13 @@ public class RobotContainer {
         operator.x().onFalse(s_Claw.getDefaultCommand());
         operator.x().onFalse(s_Elevator.getDefaultCommand());
 
+        operator.leftStick().onTrue(new InstantCommand(()-> s_Elevator.fullDown(), s_Elevator));
+        operator.leftStick().onFalse(s_Elevator.getDefaultCommand());
+        operator.rightStick().onTrue(new InstantCommand(()-> s_Elevator.resetElevatorEncoders(), s_Elevator));
+        operator.rightStick().onFalse(s_Elevator.getDefaultCommand());
+
+
+
 
     }
 
@@ -179,4 +187,6 @@ public class RobotContainer {
         /* Run the path selected from the auto chooser */
         return autoChooser.getSelected();
     }
+
+    
 }

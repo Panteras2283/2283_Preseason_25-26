@@ -44,9 +44,9 @@ public class Constants {
             public static final double feedCoral_pos = 0.5;
             public static final double groundAlgae_pos = 0;
             public static final double L1_pos = 0;
-            public static final double L2_pos = 7.5; 
-            public static final double L3_pos = 7.5;
-            public static final double L4_pos = 7;
+            public static final double L2_pos = 4.8; 
+            public static final double L3_pos = 7.36;
+            public static final double L4_pos = 5.05;
             public static final double P_pos = 0;
             public static final double N_pos = 0;
             public static final double A1_pos = 0;
@@ -64,7 +64,7 @@ public class Constants {
     public static final class ElevatorConstants {
         public static final int elevatorLeftID = 17;
         public static final int elevatorRightID = 10;
-        public static final double elevatorKP = 0.1;
+        public static final double elevatorKP = 0.085;
         public static final double elevatorKI = 0.0000075;
         public static final double elevatorKD = 0.0;
         public static final double elevatorKFF = 0.0;
@@ -75,14 +75,14 @@ public class Constants {
         public static final double allErr = 1;
 
         //LEFT MOTOR POSITIONS
-        public static final double leftDefault_pos = 0;
+        public static final double leftDefault_pos = 1;
         public static final double leftFS_pos = 0;
         public static final double leftFloorAlgae_pos = 0;
 
         public static final double leftL1_pos = 0;
-        public static final double leftL2_pos = 19.38;
-        public static final double leftL3_pos = 30.29;
-        public static final double leftL4_pos = 57.12;
+        public static final double leftL2_pos = 22.07;
+        public static final double leftL3_pos = 40.50;
+        public static final double leftL4_pos = 61.07;
 
         public static final double leftProcessor_pos = 0;
         public static final double leftNet_pos = 0;
@@ -90,14 +90,14 @@ public class Constants {
         public static final double leftA2_pos = 0;
 
         //RIGHT MOTOR POSITIONS
-        public static final double rightDefault_pos = 0;
+        public static final double rightDefault_pos = -1;
         public static final double rightFS_pos = 0;
         public static final double rightFloorAlgae_pos = 0;
 
         public static final double rightL1_pos = 0;
-        public static final double rightL2_pos = -19.38;
-        public static final double rightL3_pos = -30.29;
-        public static final double rightL4_pos = -57.12;
+        public static final double rightL2_pos = -22.07;
+        public static final double rightL3_pos = -40.50;
+        public static final double rightL4_pos = -61.07;
 
         public static final double rightProcessor_pos = 0;
         public static final double rightNet_pos = 0;

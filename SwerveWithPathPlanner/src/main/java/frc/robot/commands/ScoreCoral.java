@@ -43,14 +43,14 @@ public class ScoreCoral extends Command {
           if (s_Claw.getUpperSensor() == true || s_Claw.getLowerSensor() == true){
             s_Claw.Claw_Stop();
             s_Elevator.setPosition(Constants.ElevatorConstants.leftDefault_pos, Constants.ElevatorConstants.rightDefault_pos);
-            s_Claw.setPosition(Constants.ClawConstants.default_pos);
+            s_Claw.setPosition(0);
           }
         } else {
           s_Claw.Claw_Release();
           if (s_Claw.getUpperSensor() == true || s_Claw.getLowerSensor() == true){
             s_Claw.Claw_Stop();
             s_Elevator.setPosition(Constants.ElevatorConstants.leftDefault_pos, Constants.ElevatorConstants.rightDefault_pos);
-            s_Claw.setPosition(Constants.ClawConstants.default_pos);
+            s_Claw.setPosition(0);
           }
         }
       }

@@ -8,6 +8,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -142,5 +143,12 @@ public class Elevator extends SubsystemBase {
   public void fullStop(){
     elevatorLeft.set(0);
     elevatorRight.set(0);
+  }
+
+  public InstantCommand fullDownCommand(){
+      return new InstantCommand(() -> this.fullDown());
+  }
+  public InstantCommand resetElevatorEncoders(){
+      return new InstantCommand(() -> this.resetEncoders());
   }
 }
