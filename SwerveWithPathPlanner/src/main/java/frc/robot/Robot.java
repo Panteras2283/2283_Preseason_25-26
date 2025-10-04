@@ -17,6 +17,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+//Std devs testing imports
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
+//Std devs testing imports end
 import frc.robot.Constants;
 
 
@@ -25,7 +33,75 @@ public class Robot extends TimedRobot {
   private final RobotContainer m_robotContainer;
   private final boolean kUseLimelightLeft = true;
   private final boolean kUseLimelightRight = true;
-  
+  //Std devs constants
+  private static final double kSpinGateRevPerSec = 1.0;
+
+  private static final double kDisagreePosM = 0.12;
+  private static final double kDisagreePosMaxM = 0.5;
+  private static final double kDisagreeThRad = Math.toRadians(7.5);
+  private static final double kDisagreeThMaxRad = Math.toRadians(23);
+
+  private static final double kBaseStdX = 0.18;
+  private static final double kBaseStdY = 0.18;
+  private static final double kBaseStdTh = 0.22;
+
+  private static final int kQualityReqTags = 2;
+
+  private static final double kFlowMaxMps = 4.0;
+  private static final double kFlowMaxScale = 1.8;
+
+  private static final double kStdXYFloor = 0.06;
+  private static final double kStdXYCeil = 1.20;
+  private static final double kStdThFloor = 0.10;
+  private static final double kStdThCeil = 1.20;
+
+  private static final double kTrustMaxFactor = 0.90;
+  private static final double kTrustMinFactor = 0.30;
+  //Std devs constants end
+  //Std devs helpers
+  private Matrix<N3, N1> visionStdDevsAdaptive(LimelightHelpers.PoseEstimate est, Pose2d curPose, double vTransMps){
+    int tags = est.tagCount;
+    boolean qualityGood = (tags >= kQualityReqTags);
+
+    double dx = est.pose.getX() - curPose.getX();
+    double dy = est.pose.getY() - curPose.getY();
+    double posErr = Math.hypot(dx, dy);
+    double dtheta = Math.abs(est.pose.getRotation().minus(curPose.getRotation()).getRadians());
+
+    boolean bigDisagreement = (posErr > kDisagreePosM) || (dtheta > kDisagreeThRad);
+
+    double baseX = kBaseStdX, baseY = kBaseStdY, baseTh = kBaseStdTh;
+    
+    double qualityScale = 1.0;
+    if (tags >= kQualityReqTags + 1) qualityScale *= 0.85;
+    else if (tags == 1) qualityScale *= 1.10;
+
+    double trustBoost = 1.0;
+    if(qualityGood && bigDisagreement){
+      double posFactor = mapClamp(posErr, kDisagreePosM, kDisagreePosMaxM, kTrustMaxFactor, kTrustMinFactor);
+      double thFactor = mapClamp(dtheta, kDisagreeThRad, kDisagreeThMaxRad, kTrustMaxFactor, kTrustMinFactor);
+      trustBoost = Math.min(posFactor, thFactor);
+    }
+
+    double flowScale = mapClamp(vTransMps, 0.0, kFlowMaxMps, 1.0, kFlowMaxScale);
+
+    double sx = clamp(baseX * qualityScale * trustBoost * flowScale, kStdXYFloor, kStdXYCeil);
+    double sy = clamp(baseY * qualityScale * trustBoost * flowScale, kStdXYFloor, kStdXYCeil);
+    double sth = clamp(baseTh * qualityScale * trustBoost, kStdThFloor, kStdThCeil);
+
+    return VecBuilder.fill(sx, sy, sth);
+  }
+
+  private static double clamp(double v, double lo, double hi){
+    return Math.max(lo, Math.min(hi, v));
+  }
+  private static double mapClamp(double x, double inLo, double inHi, double outLo, double outHi){
+    double t = (x - inLo) / (inHi - inLo);
+    t = clamp(t, 0.0, 1.0);
+    return outLo + (outHi - outLo) * t;
+  }
+
+
 
   //We create the Field2d object to visualize the robot's position on the field in the dashboard.
   private final Field2d m_field = new Field2d();
@@ -102,7 +178,14 @@ public class Robot extends TimedRobot {
       //We get the robot's pose estimate back from the Limelight camera.
       LimelightHelpers.SetRobotOrientation("limelight-right", headingDeg, 0, 0, 0, 0, 0);
       var llrMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");
-      if (llrMeasurement != null && llrMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
+      if (llrMeasurement != null && llrMeasurement.tagCount > 0) {
+        var stNow = m_robotContainer.drivetrain.getState();
+        double vTransMps = Math.hypot(stNow.Speeds.vxMetersPerSecond, stNow.Speeds.vyMetersPerSecond);
+
+        if (Math.abs(omegaRps) < kSpinGateRevPerSec) {
+          var std = visionStdDevsAdaptive(llrMeasurement, stNow.Pose, vTransMps);
+          m_robotContainer.drivetrain.addVisionMeasurement(llrMeasurement.pose, llrMeasurement.timestampSeconds, std);
+        } 
         // If the Limelight camera has a valid pose estimate, we add it to the drivetrain's vision measurements. PENDING: Add standar deviation to the vision measurement for better filtering.
         m_robotContainer.drivetrain.addVisionMeasurement(llrMeasurement.pose, llrMeasurement.timestampSeconds);
       }
@@ -112,8 +195,15 @@ public class Robot extends TimedRobot {
       //We do the same for the left Limelight camera.
       LimelightHelpers.SetRobotOrientation("limelight-left", headingDeg, 0, 0, 0, 0, 0);
       var lllMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
-      if (lllMeasurement != null && lllMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
-        m_robotContainer.drivetrain.addVisionMeasurement(lllMeasurement.pose, lllMeasurement.timestampSeconds);
+      if (lllMeasurement != null && lllMeasurement.tagCount > 0) {
+        var stNow = m_robotContainer.drivetrain.getState();
+        double vTransMps = Math.hypot(stNow.Speeds.vxMetersPerSecond, stNow.Speeds.vyMetersPerSecond);
+        
+        if (Math.abs(omegaRps) < kSpinGateRevPerSec) {
+          var std = visionStdDevsAdaptive(lllMeasurement, stNow.Pose, vTransMps);
+          m_robotContainer.drivetrain.addVisionMeasurement(lllMeasurement.pose, lllMeasurement.timestampSeconds, std);
+        }
+       
       }
     }
 
@@ -170,6 +260,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testExit() {}
+
 
   @Override
   public void simulationPeriodic() {}

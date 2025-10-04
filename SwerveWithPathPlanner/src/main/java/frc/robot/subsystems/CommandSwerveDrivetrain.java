@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.math.VecBuilder;
 
 import java.io.IOException;
 import java.util.HashMap;  
@@ -151,6 +152,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             startSimThread();
         }
         configureAutoBuilder();
+
+        this.setVisionMeasurementStdDevs(
+            VecBuilder.fill(
+                0.30,
+                0.30,
+                0.35
+            )
+        );
 
         poseMap = buildPoseMap();
         pathMap = buildPathMap();
@@ -320,9 +329,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 ),
                 new PPHolonomicDriveController(
                     // PID constants for translation
-                    new PIDConstants(3.2, 0, 0),
+                    new PIDConstants(3.6, 0, 0),
                     // PID constants for rotation
-                    new PIDConstants(2.63, 0, 0)
+                    new PIDConstants(2, 0, 0)
                 ),
                 config,
                 // Assume the path needs to be flipped for Red vs Blue, this is normally the case
