@@ -70,6 +70,7 @@ public class RobotContainer {
     /*Subsystems */
    private final Claw s_Claw = new Claw();
    private final Elevator s_Elevator = new Elevator();
+   private final LEDs s_LEDs = new LEDs();
 
 
     public RobotContainer() {
@@ -150,24 +151,26 @@ public class RobotContainer {
         //operator.button(9).onTrue(setPoseKey("PR"));
         operator.pov(180).onTrue(new Feed_Coral(s_Claw, s_Elevator));
         operator.pov(180).onFalse(s_Claw.getDefaultCommand());
-        operator.b().onTrue(new ScoreCoral(s_Elevator, s_Claw, 
+        
+        operator.b().onTrue(new ScoreCoral(s_Elevator, s_Claw, s_LEDs,
         Constants.ElevatorConstants.leftL2_pos, 
         Constants.ElevatorConstants.rightL2_pos,
-        Constants.ClawConstants.L2_pos));
+        Constants.ClawConstants.L2_pos, "L2"
+        ));
         operator.b().onFalse(s_Claw.getDefaultCommand());
         operator.b().onFalse(s_Elevator.getDefaultCommand());
         
-        operator.y().onTrue(new ScoreCoral(s_Elevator, s_Claw, 
+        operator.y().onTrue(new ScoreCoral(s_Elevator, s_Claw, s_LEDs,
         Constants.ElevatorConstants.leftL3_pos, 
         Constants.ElevatorConstants.rightL3_pos,
-        Constants.ClawConstants.L3_pos));
+        Constants.ClawConstants.L3_pos, "L3"));
         operator.y().onFalse(s_Claw.getDefaultCommand());
         operator.y().onFalse(s_Elevator.getDefaultCommand());
 
-        operator.x().onTrue(new ScoreCoral(s_Elevator, s_Claw, 
+        operator.x().onTrue(new ScoreCoral(s_Elevator, s_Claw, s_LEDs,
         Constants.ElevatorConstants.leftL4_pos, 
         Constants.ElevatorConstants.rightL4_pos,
-        Constants.ClawConstants.L4_pos));
+        Constants.ClawConstants.L4_pos, "L4"));
         operator.x().onFalse(s_Claw.getDefaultCommand());
         operator.x().onFalse(s_Elevator.getDefaultCommand());
 

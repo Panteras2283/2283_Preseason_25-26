@@ -12,18 +12,22 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class ScoreCoral extends Command {
   private Elevator s_Elevator;
   private Claw s_Claw;
+  private LEDs s_LEDs;
   private double left_pos;
   private double right_pos;
   private double claw_pos;
-  /** Creates a new Test1. */
-  
-  public ScoreCoral(Elevator s_Elevator, Claw s_Claw, double left_pos, double right_pos, double claw_pos) {
-    this.s_Elevator = s_Elevator;
-    this.s_Claw = s_Claw;
-    this.right_pos = right_pos;
-    this.left_pos = left_pos;
-    this.claw_pos = claw_pos;
-    addRequirements(s_Elevator, s_Claw);
+  private String animation;
+    /** Creates a new Test1. */
+    
+    public ScoreCoral(Elevator s_Elevator, Claw s_Claw, LEDs s_LEDs, double left_pos, double right_pos, double claw_pos, String animation) {
+      this.s_Elevator = s_Elevator;
+      this.s_Claw = s_Claw;
+      this.s_LEDs = s_LEDs;
+      this.right_pos = right_pos;
+      this.left_pos = left_pos;
+      this.claw_pos = claw_pos;
+      this.animation = animation;
+    addRequirements(s_Elevator, s_Claw, s_LEDs);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -34,6 +38,17 @@ public class ScoreCoral extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    switch (animation){
+      case "L2":
+        s_LEDs.L2();
+        break;
+      case "L3":
+        s_LEDs.L3();
+        break;
+      case "L4":
+        s_LEDs.L4();
+        break;  
+    }
     s_Elevator.setPosition(left_pos, right_pos);
     if(s_Elevator.getLeftPos() >= left_pos - 0.2 || s_Elevator.getRightPos() <= right_pos + 0.2){
       s_Claw.setPosition(claw_pos);
