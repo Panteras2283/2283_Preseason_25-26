@@ -55,7 +55,7 @@ public class Robot extends TimedRobot {
   private static final double kStdThFloor = 0.10;
   private static final double kStdThCeil = 1.20;
 
-  private static final double kTrustMaxFactor = 0.90;
+  private static final double kTrustMaxFactor = 0.65;
   private static final double kTrustMinFactor = 0.30;
   //Std devs constants end
   //Std devs helpers
