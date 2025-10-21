@@ -133,13 +133,10 @@ public class RobotContainer {
         // reset the field-centric heading on left bumper press
         driver.back().whileTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-        driver.leftBumper().onTrue(new ProxyCommand(()-> drivetrain.PathfindToReefpath(0, constraints, 0.0)));
-        driver.leftBumper().onFalse(drivetrain.getDefaultCommand());
-        driver.y().onTrue(new ProxyCommand(()-> drivetrain.PathfindToReefpath(1, constraints, 0.0)));
-        driver.y().onFalse(drivetrain.getDefaultCommand());
-
-        driver.rightBumper().onTrue(new ProxyCommand(()-> drivetrain.PathfindToReefpath(2, constraints, 0.0)));
+        driver.rightBumper().onTrue(new PIDautopilotCommand(drivetrain, new Pose2d(14.3691154376563, 4.1617740410172575, Rotation2d.fromDegrees(180))));
         driver.rightBumper().onFalse(drivetrain.getDefaultCommand());
+
+
         
         //driver.rightBumper().whileTrue(drivetrain.PathfindToPose(targetPose, constraints, 0.0));
 

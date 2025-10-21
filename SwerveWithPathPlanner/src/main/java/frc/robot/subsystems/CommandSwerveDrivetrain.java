@@ -32,7 +32,6 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.math.VecBuilder;
 
 import java.io.IOException;
@@ -49,7 +48,7 @@ import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem {
     private String selectedPoseKey = "1";
     private final Map<String, List<Pose2d>> poseMap;
-    private final Map<String, List<PathPlannerPath>> pathMap;
+   
 
 
     private static final double kSimLoopPeriod = 0.005; // 5 ms
@@ -66,73 +65,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     /** Swerve request to apply during robot-centric path following */
     private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
 
-    /* Swerve requests to apply during SysId characterization */
-    private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
-    private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
-    private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
 
-    /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
-    private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
-        new SysIdRoutine.Config(
-            null,        // Use default ramp rate (1 V/s)
-            Volts.of(4), // Reduce dynamic step voltage to 4 V to prevent brownout
-            null,        // Use default timeout (10 s)
-            // Log state with SignalLogger class
-            state -> SignalLogger.writeString("SysIdTranslation_State", state.toString())
-        ),
-        new SysIdRoutine.Mechanism(
-            output -> setControl(m_translationCharacterization.withVolts(output)),
-            null,
-            this
-        )
-    );
 
-    /* SysId routine for characterizing steer. This is used to find PID gains for the steer motors. */
-    private final SysIdRoutine m_sysIdRoutineSteer = new SysIdRoutine(
-        new SysIdRoutine.Config(
-            null,        // Use default ramp rate (1 V/s)
-            Volts.of(7), // Use dynamic voltage of 7 V
-            null,        // Use default timeout (10 s)
-            // Log state with SignalLogger class
-            state -> SignalLogger.writeString("SysIdSteer_State", state.toString())
-        ),
-        new SysIdRoutine.Mechanism(
-            volts -> setControl(m_steerCharacterization.withVolts(volts)),
-            null,
-            this
-        )
-    );
+    
 
-    /*
-     * SysId routine for characterizing rotation.
-     * This is used to find PID gains for the FieldCentricFacingAngle HeadingController.
-     * See the documentation of SwerveRequest.SysIdSwerveRotation for info on importing the log to SysId.
-     */
-    private final SysIdRoutine m_sysIdRoutineRotation = new SysIdRoutine(
-        new SysIdRoutine.Config(
-            /* This is in radians per second², but SysId only supports "volts per second" */
-            Volts.of(Math.PI / 6).per(Second),
-            /* This is in radians per second, but SysId only supports "volts" */
-            Volts.of(Math.PI),
-            null, // Use default timeout (10 s)
-            // Log state with SignalLogger class
-            state -> SignalLogger.writeString("SysIdRotation_State", state.toString())
-        ),
-        new SysIdRoutine.Mechanism(
-            output -> {
-                /* output is actually radians per second, but SysId only supports "volts" */
-                setControl(m_rotationCharacterization.withRotationalRate(output.in(Volts)));
-                /* also log the requested output for SysId */
-                SignalLogger.writeDouble("Rotational_Rate", output.in(Volts));
-            },
-            null,
-            this
-        )
-    );
 
-    /* The SysId routine to test */
-    private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineTranslation;
 
+   
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
      * <p>
@@ -162,7 +101,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         );
 
         poseMap = buildPoseMap();
-        pathMap = buildPathMap();
 
         SmartDashboard.putString("Selected Pose", selectedPoseKey);
     }
@@ -179,14 +117,17 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         map.put("1", List.of(
             new Pose2d(14.386521979123565,3.8652093619149492,one),
             new Pose2d(14.37308854121592, 4.022884768621724,one),
-            new Pose2d(14.369115437656363, 4.1617740410172575,one)
+            new Pose2d(14.369115437656363, 4.1617740410172575,one),
+            new Pose2d(0,0,one)
         ));
         map.put("2", List.of(
             new Pose2d(13.927357713135624, 5.077049976831412,two),
             new Pose2d(13.733098481974052, 5.177925337234092,two),
-            new Pose2d(13.596906024202786, 5.2508740999154675,two)
+            new Pose2d(13.596906024202786, 5.2508740999154675,two),
+            new Pose2d(0,0,two)
         ));
         map.put("3", List.of(
+            new Pose2d(0,0,three),
             new Pose2d(0,0,three),
             new Pose2d(0,0,three),
             new Pose2d(0,0,three)
@@ -194,9 +135,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         map.put("4", List.of(
             new Pose2d(0,0,four),
             new Pose2d(0,0,four),
+            new Pose2d(0,0,four),
             new Pose2d(0,0,four)
         ));
         map.put("5", List.of(
+            new Pose2d(0,0,five),
             new Pose2d(0,0,five),
             new Pose2d(0,0,five),
             new Pose2d(0,0,five)
@@ -204,115 +147,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         map.put("6", List.of(
             new Pose2d(13.557424187425514, 2.773494019391029,six),
             new Pose2d(13.687912422277794, 2.8704204132661006,six),
-            new Pose2d(13.864246378035794, 2.949463964566611,six)
+            new Pose2d(13.864246378035794, 2.949463964566611,six),
+            new Pose2d(0,0,six)
         ));
 
         return map;
     }
 
-    private Map<String, List<PathPlannerPath>> buildPathMap(){
-        Map<String, List<PathPlannerPath>> map = new HashMap<>();
-        //PathPlannerPath one_L_R = PathPlannerPath.fromPathFile("1_L_R");
-      
-        try {
-            map.put("1", List.of(
-                PathPlannerPath.fromPathFile("1_L"),
-                PathPlannerPath.fromPathFile("1_C"),
-                PathPlannerPath.fromPathFile("1_R")
-            ));
-        } catch (FileVersionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        try {
-            map.put("2", List.of(
-                PathPlannerPath.fromPathFile("2_L"),
-                PathPlannerPath.fromPathFile("2_C"),
-                PathPlannerPath.fromPathFile("2_R")
-            ));
-        } catch (FileVersionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        try {
-            map.put("3", List.of(
-                PathPlannerPath.fromPathFile("1_L"),
-                PathPlannerPath.fromPathFile("1_C"),
-                PathPlannerPath.fromPathFile("1_R")
-            ));
-        } catch (FileVersionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        try {
-            map.put("4", List.of(
-                PathPlannerPath.fromPathFile("1_L"),
-                PathPlannerPath.fromPathFile("1_C"),
-                PathPlannerPath.fromPathFile("1_R")
-            ));
-        } catch (FileVersionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        try {
-            map.put("5", List.of(
-                PathPlannerPath.fromPathFile("1_L"),
-                PathPlannerPath.fromPathFile("1_C"),
-                PathPlannerPath.fromPathFile("1_R")
-            ));
-        } catch (FileVersionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        try {
-            map.put("6", List.of(
-                PathPlannerPath.fromPathFile("6_L"),
-                PathPlannerPath.fromPathFile("6_C"),
-                PathPlannerPath.fromPathFile("6_R")
-            ));
-        } catch (FileVersionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        return map;
-    }
+   
 
     private void configureAutoBuilder() {
         try {
@@ -353,27 +195,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return run(() -> this.setControl(requestSupplier.get()));
     }
 
-    /**
-     * Runs the SysId Quasistatic test in the given direction for the routine
-     * specified by {@link #m_sysIdRoutineToApply}.
-     *
-     * @param direction Direction of the SysId Quasistatic test
-     * @return Command to run
-     */
-    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-        return m_sysIdRoutineToApply.quasistatic(direction);
-    }
+   
 
-    /**
-     * Runs the SysId Dynamic test in the given direction for the routine
-     * specified by {@link #m_sysIdRoutineToApply}.
-     *
-     * @param direction Direction of the SysId Dynamic test
-     * @return Command to run
-     */
-    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-        return m_sysIdRoutineToApply.dynamic(direction);
-    }
+   
 
     public Command PathfindToPose(
         Pose2d targetPose,
@@ -389,32 +213,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return pathfindingCommand;
     }
 
-    public Command PathfindToReef(
-        int alignmentIndex,
-        PathConstraints constraints,
-        double goalEndVelocity
-    ) {
-       Command pathfindingCommand = AutoBuilder.pathfindToPose(
-            poseMap.get(selectedPoseKey).get(alignmentIndex),
-            constraints,
-            goalEndVelocity
-        );
-        pathfindingCommand.addRequirements(this);
-        return pathfindingCommand;
-    }
+    
 
-    public Command PathfindToReefpath(
-        int alignmentIndex,
-        PathConstraints constraints,
-        double goalEndVelocity
-    ) {
-       Command pathfindingCommand = AutoBuilder.pathfindThenFollowPath(
-            pathMap.get(selectedPoseKey).get(alignmentIndex),
-            constraints
-        );
-        pathfindingCommand.addRequirements(this);
-        return pathfindingCommand;
-    }
+    
 
     private void setPoseKey(String key){
         selectedPoseKey = key;
