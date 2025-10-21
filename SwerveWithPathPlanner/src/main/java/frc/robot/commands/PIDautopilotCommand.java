@@ -6,31 +6,66 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.generated.TunerConstants; // Import TunerConstants
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
-
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class PIDautopilotCommand extends Command {
   private final CommandSwerveDrivetrain s_Swerve;
   private final Pose2d targetPose;
   private final PIDController xController;
   private final PIDController yController;
   private final PIDController rotationController;
-  private final SwerveRequest.ApplyRobotSpeeds driveRequest = new SwerveRequest.ApplyRobotSpeeds();
+
+  // Use FieldCentric request so the robot drives relative to the field
+  private final SwerveRequest.FieldCentric driveRequest = new SwerveRequest.FieldCentric();
+
+  // Get max speeds from TunerConstants
+  private final double MAX_SPEED = 4.7;
+  // Using the value from RobotContainer
+  private final double MAX_ANGULAR_SPEED = Units.rotationsToRadians(0.55); // Convert 0.55 rotations/sec to rad/sec
+
+  // --- TUNING VALUES ---
+  // Start with values like 2.5 for P and 0 for I and D, then tune
+  private static final double kPX = 1; // Proportional gain for X
+  private static final double kIX = 0.0; // Integral gain for X
+  private static final double kDX = 0.0; // Derivative gain for X
+
+  private static final double kPY = 1; // Proportional gain for Y
+  private static final double kIY = 0.0; // Integral gain for Y
+  private static final double kDY = 0.0; // Derivative gain for Y
+
+  private static final double kPRot = 1; // Proportional gain for Rotation
+  private static final double kIRot = 0.0; // Integral gain for Rotation
+  private static final double kDRot = 0.0; // Derivative gain for Rotation
+
+  // Tolerances for ending the command
+  private static final double POSE_TOLERANCE_METERS = 0.05; // 5 cm
+  private static final double ANGLE_TOLERANCE_RADIANS = Units.degreesToRadians(2); // 2 degrees
+  // --- END TUNING VALUES ---
+
+
   /** Creates a new PIDautopilotCommand. */
   public PIDautopilotCommand(CommandSwerveDrivetrain s_Swerve, Pose2d targetPose) {
     this.s_Swerve = s_Swerve;
     this.targetPose = targetPose;
 
-    xController = new PIDController(10.0, 0.0, 0.0); // Adjust gains as necessary
-    yController = new PIDController(10.0, 0.0, 0.0); // Adjust gains as necessary
-    rotationController = new PIDController(10.0, 0.0, 0.0); // Adjust gains as necessary
+    xController = new PIDController(kPX, kIX, kDX);
+    yController = new PIDController(kPY, kIY, kDY);
+    rotationController = new PIDController(kPRot, kIRot, kDRot);
+    
+    // Enable continuous input for rotation controller to handle wrap-around (e.g., -Pi to +Pi)
     rotationController.enableContinuousInput(-Math.PI, Math.PI);
+
+    // Set the tolerance for the PID controllers to match the isFinished() logic
+    xController.setTolerance(POSE_TOLERANCE_METERS);
+    yController.setTolerance(POSE_TOLERANCE_METERS);
+    rotationController.setTolerance(ANGLE_TOLERANCE_RADIANS);
+
 
     addRequirements(s_Swerve);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -38,37 +73,54 @@ public class PIDautopilotCommand extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    // Reset controllers to clear any previous state
+    xController.reset();
+    yController.reset();
+    rotationController.reset();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println("PIDautopilotCommand is running...");
     Pose2d currentPose = s_Swerve.getState().Pose;
 
+    // Calculate outputs from PID controllers
+    // These are desired *velocities* in the field-relative frame
+    // calculate(measurement, setpoint) => (current, target)
     double xOutput = xController.calculate(currentPose.getX(), targetPose.getX());
     double yOutput = yController.calculate(currentPose.getY(), targetPose.getY());
+    
+    // For rotation, we use the error between the current angle and the target angle
+    // The PID controller will output a rotational velocity
     double rotationOutput = rotationController.calculate(currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
 
-    xOutput = Math.max(-1, Math.min(1, xOutput));
-    yOutput = Math.max(-1, Math.min(1, yOutput));
-    rotationOutput = Math.max(-1, Math.min(1, rotationOutput));
+    // Clamp the outputs to the maximum robot speeds
+    xOutput = Math.max(-MAX_SPEED, Math.min(MAX_SPEED, xOutput));
+    yOutput = Math.max(-MAX_SPEED, Math.min(MAX_SPEED, yOutput));
+    rotationOutput = Math.max(-MAX_ANGULAR_SPEED, Math.min(MAX_ANGULAR_SPEED, rotationOutput));
 
-    /*SwerveRequest request = new SwerveRequest.fromFieldRelativeSpeeds(
-      xOutput,
-      yOutput,
-      rotationOutput,
-      s_Swerve.getRotation()
-    );*/
+    // Apply the calculated velocities to the swerve drive
+    // The FieldCentric request will automatically convert these field-relative
+    // velocities to robot-relative velocities based on the current gyro angle.
+    s_Swerve.setControl(driveRequest
+        .withVelocityX(-xOutput)   // Field-relative X velocity (m/s)
+        .withVelocityY(-yOutput)   // Field-relative Y velocity (m/s)
+        .withRotationalRate(rotationOutput) // Field-relative rotational velocity (rad/s)
+    );
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    // Stop the robot when the command ends
+    s_Swerve.setControl(new SwerveRequest.SwerveDriveBrake());
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    // Check if the robot is at the target pose and rotation within the defined tolerances
+    return xController.atSetpoint() && yController.atSetpoint() && rotationController.atSetpoint();
   }
 }
