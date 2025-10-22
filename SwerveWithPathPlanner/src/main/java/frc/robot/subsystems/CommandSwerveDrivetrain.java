@@ -64,13 +64,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     /** Swerve request to apply during robot-centric path following */
     private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
-
-
-
-    
-
-
-
    
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
@@ -90,15 +83,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
-        configureAutoBuilder();
 
-        this.setVisionMeasurementStdDevs(
-            VecBuilder.fill(
-                0.30,
-                0.30,
-                0.35
-            )
-        );
+        configureAutoBuilder();
 
         poseMap = buildPoseMap();
 
@@ -154,8 +140,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return map;
     }
 
-   
-
     private void configureAutoBuilder() {
         try {
             var config = RobotConfig.fromGUISettings();
@@ -195,15 +179,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return run(() -> this.setControl(requestSupplier.get()));
     }
 
-   
-
-   
-
-    public Command PathfindToPose(
-        Pose2d targetPose,
-        PathConstraints constraints,
-        double goalEndVelocity
-    ) {
+    public Command PathfindToPose( Pose2d targetPose, PathConstraints constraints, double goalEndVelocity) {
        Command pathfindingCommand = AutoBuilder.pathfindToPose(
             targetPose,
             constraints,
@@ -212,10 +188,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         pathfindingCommand.addRequirements(this);
         return pathfindingCommand;
     }
-
-    
-
-    
 
     private void setPoseKey(String key){
         selectedPoseKey = key;
@@ -272,8 +244,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
         }
     }
-
-
 
     @Override
     public void periodic() {

@@ -173,7 +173,7 @@ public class Robot extends TimedRobot {
     double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
 
     //Limelight Pose Estimations
-    if (kUseLimelightLeft) {
+    if (kUseLimelightRight) {
       //We send the robot's orientation to the Limelight camera to help it calculate the position of the tags with MegaTag2.
       //We get the robot's pose estimate back from the Limelight camera.
       LimelightHelpers.SetRobotOrientation("limelight-right", headingDeg, 0, 0, 0, 0, 0);
@@ -186,12 +186,11 @@ public class Robot extends TimedRobot {
           var std = visionStdDevsAdaptive(llrMeasurement, stNow.Pose, vTransMps);
           m_robotContainer.drivetrain.addVisionMeasurement(llrMeasurement.pose, llrMeasurement.timestampSeconds, std);
         } 
-        // If the Limelight camera has a valid pose estimate, we add it to the drivetrain's vision measurements. PENDING: Add standar deviation to the vision measurement for better filtering.
-        m_robotContainer.drivetrain.addVisionMeasurement(llrMeasurement.pose, llrMeasurement.timestampSeconds);
+      
       }
     }
 
-    if (kUseLimelightRight) {
+    if (kUseLimelightLeft) {
       //We do the same for the left Limelight camera.
       LimelightHelpers.SetRobotOrientation("limelight-left", headingDeg, 0, 0, 0, 0, 0);
       var lllMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
