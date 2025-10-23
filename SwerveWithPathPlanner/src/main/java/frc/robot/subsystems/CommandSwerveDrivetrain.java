@@ -101,15 +101,15 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         Rotation2d six = Rotation2d.fromDegrees(120);
 
         map.put("1", List.of(
-            new Pose2d(14.386521979123565,3.8652093619149492,one),
-            new Pose2d(14.37308854121592, 4.022884768621724,one),
-            new Pose2d(14.369115437656363, 4.1617740410172575,one),
+            new Pose2d(14.406632954444762,3.788041069979784,one),
+            new Pose2d(14.281884252075619, 4.040542961558762,one),
+            new Pose2d(14.456828318643549, 4.207356354904912,one),
             new Pose2d(0,0,one)
         ));
         map.put("2", List.of(
-            new Pose2d(13.927357713135624, 5.077049976831412,two),
-            new Pose2d(13.733098481974052, 5.177925337234092,two),
-            new Pose2d(13.596906024202786, 5.2508740999154675,two),
+            new Pose2d(13.900868696911676, 5.075980221352474,two),
+            new Pose2d(13.615552094468969, 5.166714178434943,two),
+            new Pose2d(13.583686074611967, 5.3046561444258495,two),
             new Pose2d(0,0,two)
         ));
         map.put("3", List.of(
@@ -131,9 +131,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             new Pose2d(0,0,five)
         ));
         map.put("6", List.of(
-            new Pose2d(13.557424187425514, 2.773494019391029,six),
-            new Pose2d(13.687912422277794, 2.8704204132661006,six),
-            new Pose2d(13.864246378035794, 2.949463964566611,six),
+            new Pose2d(13.520368673946603, 2.744000924876404,six),
+            new Pose2d(13.675200251499556, 2.8882472092614715,six),
+            new Pose2d(13.861757141167796, 2.9243964737251225,six),
             new Pose2d(0,0,six)
         ));
 
@@ -194,6 +194,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         SmartDashboard.putString("Selected Pose", selectedPoseKey);
     }
 
+    public String getSelectedPoseKey(){
+        return selectedPoseKey;
+    }
+
+    public Map<String, List<Pose2d>> getPoseMap(){
+        return poseMap;
+    }
     private void autoSelectPoseKey(){
             double heading = getState().Pose.getRotation().getDegrees();
             double face1 = 180;

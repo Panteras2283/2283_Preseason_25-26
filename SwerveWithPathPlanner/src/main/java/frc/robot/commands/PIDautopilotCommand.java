@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.generated.TunerConstants; // Import TunerConstants
 import edu.wpi.first.math.controller.PIDController;
@@ -13,6 +14,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.smartdashboard.*;
 
 public class PIDautopilotCommand extends Command {
   private final CommandSwerveDrivetrain s_Swerve;
@@ -20,6 +23,9 @@ public class PIDautopilotCommand extends Command {
   private final PIDController xController;
   private final PIDController yController;
   private final PIDController rotationController;
+
+  private final CommandXboxController driverController;
+  private final CommandXboxController operatorController;
 
   // Use FieldCentric request so the robot drives relative to the field
   private final SwerveRequest.FieldCentric driveRequest = new SwerveRequest.FieldCentric();
@@ -31,28 +37,30 @@ public class PIDautopilotCommand extends Command {
 
   // --- TUNING VALUES ---
   // Start with values like 2.5 for P and 0 for I and D, then tune
-  private static final double kPX = 1; // Proportional gain for X
-  private static final double kIX = 0.0; // Integral gain for X
+  private static final double kPX = 2; // Proportional gain for X
+  private static final double kIX = 0.2; // Integral gain for X
   private static final double kDX = 0.0; // Derivative gain for X
 
-  private static final double kPY = 1; // Proportional gain for Y
-  private static final double kIY = 0.0; // Integral gain for Y
+  private static final double kPY = 2; // Proportional gain for Y
+  private static final double kIY = 0.2; // Integral gain for Y
   private static final double kDY = 0.0; // Derivative gain for Y
 
-  private static final double kPRot = 1; // Proportional gain for Rotation
-  private static final double kIRot = 0.0; // Integral gain for Rotation
+  private static final double kPRot = 2; // Proportional gain for Rotation
+  private static final double kIRot = 0.2; // Integral gain for Rotation
   private static final double kDRot = 0.0; // Derivative gain for Rotation
 
   // Tolerances for ending the command
-  private static final double POSE_TOLERANCE_METERS = 0.05; // 5 cm
+  private static final double POSE_TOLERANCE_METERS = 0.025; // 5 cm
   private static final double ANGLE_TOLERANCE_RADIANS = Units.degreesToRadians(2); // 2 degrees
   // --- END TUNING VALUES ---
 
 
   /** Creates a new PIDautopilotCommand. */
-  public PIDautopilotCommand(CommandSwerveDrivetrain s_Swerve, Pose2d targetPose) {
+  public PIDautopilotCommand(CommandSwerveDrivetrain s_Swerve, Pose2d targetPose, CommandXboxController driver, CommandXboxController operator) {
     this.s_Swerve = s_Swerve;
     this.targetPose = targetPose;
+    this.driverController = driver;
+    this.operatorController = operator;
 
     xController = new PIDController(kPX, kIX, kDX);
     yController = new PIDController(kPY, kIY, kDY);
@@ -78,6 +86,8 @@ public class PIDautopilotCommand extends Command {
     xController.reset();
     yController.reset();
     rotationController.reset();
+
+    SmartDashboard.putBoolean("AtTargetPose", false);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -108,6 +118,16 @@ public class PIDautopilotCommand extends Command {
         .withVelocityY(-yOutput)   // Field-relative Y velocity (m/s)
         .withRotationalRate(rotationOutput) // Field-relative rotational velocity (rad/s)
     );
+
+    if(xController.atSetpoint() && yController.atSetpoint() && rotationController.atSetpoint()) {
+      SmartDashboard.putBoolean("AtTargetPose", true);
+      driverController.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 0.8);
+      operatorController.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 0.8);
+    } else {
+      SmartDashboard.putBoolean("AtTargetPose", false);
+      driverController.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 0.0);
+      operatorController.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 0.0);
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -115,12 +135,15 @@ public class PIDautopilotCommand extends Command {
   public void end(boolean interrupted) {
     // Stop the robot when the command ends
     s_Swerve.setControl(new SwerveRequest.SwerveDriveBrake());
+    SmartDashboard.putBoolean("AtTargetPose", false);
+    driverController.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 0.0);
+    operatorController.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 0.0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     // Check if the robot is at the target pose and rotation within the defined tolerances
-    return xController.atSetpoint() && yController.atSetpoint() && rotationController.atSetpoint();
+    return false;
   }
 }
