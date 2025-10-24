@@ -114,6 +114,8 @@ public class Robot extends TimedRobot {
     // Add Field2d to SmartDashboard
     SmartDashboard.putData("Field", m_field);
 
+    // Add this line to put the scheduler on SmartDashboard
+    SmartDashboard.putData(CommandScheduler.getInstance());
 
     // Add boolean Limelight buttons to SmartDashboard
     SmartDashboard.putBoolean("LL Left", kUseLimelightLeft);
