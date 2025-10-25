@@ -27,6 +27,8 @@ import edu.wpi.first.math.util.Units;
 //Std devs testing imports end
 import frc.robot.Constants;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
+
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -228,6 +230,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+    // Add this line to switch to the "Autonomous" tab on Elastic
+    NetworkTableInstance.getDefault().getTable("SmartDashboard").getStringTopic(".elastic/activeTab").publish().set("Autonomous");
   }
 
   @Override
@@ -241,6 +245,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    // Add this line to switch to the "Teleoperated" tab on Elastic
+    NetworkTableInstance.getDefault().getTable("SmartDashboard").getStringTopic(".elastic/activeTab").publish().set("Teleoperated");
   }
 
   @Override
