@@ -90,6 +90,7 @@ public class ScoreCoral extends Command {
   @Override
   public boolean isFinished() {
     if((s_Claw.getUpperSensor() == true && s_Claw.getLowerSensor()==true) && (s_Elevator.getLeftPos() >= Constants.ElevatorConstants.leftDefault_pos - 0.05 || s_Elevator.getRightPos() <= Constants.ElevatorConstants.rightDefault_pos + 0.05)){
+      s_LEDs.Default();
       return true;
     } else {
       return false;

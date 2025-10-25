@@ -38,11 +38,11 @@ public class PIDautopilotCommand extends Command {
   // --- TUNING VALUES ---
   // Start with values like 2.5 for P and 0 for I and D, then tune
   private static final double kPX = 1.5; // Proportional gain for X
-  private static final double kIX = 0.2; // Integral gain for X
+  private static final double kIX = 0.5; // Integral gain for X
   private static final double kDX = 0.0; // Derivative gain for X
 
   private static final double kPY = 1.5; // Proportional gain for Y
-  private static final double kIY = 0.2; // Integral gain for Y
+  private static final double kIY = 0.5; // Integral gain for Y
   private static final double kDY = 0.0; // Derivative gain for Y
 
   private static final double kPRot = 1.5; // Proportional gain for Rotation
@@ -50,7 +50,7 @@ public class PIDautopilotCommand extends Command {
   private static final double kDRot = 0.0; // Derivative gain for Rotation
 
   // Tolerances for ending the command
-  private static final double POSE_TOLERANCE_METERS = 0.025; // 5 cm
+  private static final double POSE_TOLERANCE_METERS = 0.01; // 5 cm
   private static final double ANGLE_TOLERANCE_RADIANS = Units.degreesToRadians(2); // 2 degrees
   // --- END TUNING VALUES ---
 
@@ -65,6 +65,7 @@ public class PIDautopilotCommand extends Command {
     xController = new PIDController(kPX, kIX, kDX);
     yController = new PIDController(kPY, kIY, kDY);
     rotationController = new PIDController(kPRot, kIRot, kDRot);
+
     
     // Enable continuous input for rotation controller to handle wrap-around (e.g., -Pi to +Pi)
     rotationController.enableContinuousInput(-Math.PI, Math.PI);
@@ -104,6 +105,10 @@ public class PIDautopilotCommand extends Command {
     // For rotation, we use the error between the current angle and the target angle
     // The PID controller will output a rotational velocity
     double rotationOutput = rotationController.calculate(currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
+
+    SmartDashboard.putNumber("X error",targetPose.getX()-currentPose.getX());
+    SmartDashboard.putNumber("Y error", targetPose.getY()-currentPose.getY());
+    SmartDashboard.putNumber("Rot Error", targetPose.getRotation().getDegrees()-currentPose.getRotation().getDegrees());
 
     // Clamp the outputs to the maximum robot speeds
     xOutput = Math.max(-MAX_SPEED, Math.min(MAX_SPEED, xOutput));

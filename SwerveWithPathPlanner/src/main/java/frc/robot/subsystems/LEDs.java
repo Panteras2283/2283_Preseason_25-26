@@ -476,7 +476,7 @@ public class LEDs extends SubsystemBase {
     }
   }
 
-  public void Pos1(){
+  /*public void Pos1(){
 
     try{
       String targetUrl = "http://10.22.83.100/win&PL=31";
@@ -654,5 +654,5 @@ public class LEDs extends SubsystemBase {
     }catch (Exception e){
       e.printStackTrace();
     }
-  }
+  }*/
 }

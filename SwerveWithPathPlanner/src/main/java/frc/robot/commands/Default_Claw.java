@@ -16,6 +16,7 @@ public class Default_Claw extends Command {
     this.s_Claw = s_Claw;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(s_Claw);
+  
   }
 
   // Called when the command is initially scheduled.

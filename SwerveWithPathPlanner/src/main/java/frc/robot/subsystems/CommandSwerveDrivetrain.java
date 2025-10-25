@@ -101,16 +101,16 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         Rotation2d six = Rotation2d.fromDegrees(120);
 
         map.put("1", List.of(
-            new Pose2d(14.200597877642569, 3.833997499052585, one),
+            new Pose2d(14.406384355799442, 3.8488763614793107, one),
             new Pose2d(14.281884252075619, 4.040542961558762,one),
-            new Pose2d(14.456828318643549, 4.207356354904912,one),
-            new Pose2d(0,0,one)
+            new Pose2d(14.416745470429484, 4.180411319719083,one),
+            new Pose2d(14.68644385665843, 3.9987231514333006,one)
         ));
         map.put("2", List.of(
-            new Pose2d(13.900868696911676, 5.075980221352474,two),
+            new Pose2d(13.942007225493695, 5.075980221352474,two),
             new Pose2d(13.615552094468969, 5.166714178434943,two),
-            new Pose2d(13.583686074611967, 5.3046561444258495,two),
-            new Pose2d(0,0,two)
+            new Pose2d(13.574757907635396, 5.291406386789289,two),
+            new Pose2d(13.942586561238482, 5.330372951753644,two)
         ));
         map.put("3", List.of(
             new Pose2d(0,0,three),
@@ -131,10 +131,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             new Pose2d(0,0,five)
         ));
         map.put("6", List.of(
-            new Pose2d(13.520368673946603, 2.744000924876404,six),
+            new Pose2d(13.548315469360363, 2.7606406131511605,six),
             new Pose2d(13.675200251499556, 2.8882472092614715,six),
-            new Pose2d(13.861757141167796, 2.9243964737251225,six),
-            new Pose2d(0,0,six)
+            new Pose2d(13.866580465866956, 2.9300426279091027,six),
+            new Pose2d(13.878870534000214, 2.6161507165235838,six)
         ));
 
         return map;

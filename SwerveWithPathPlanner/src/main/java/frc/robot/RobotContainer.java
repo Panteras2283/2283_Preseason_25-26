@@ -127,7 +127,7 @@ public class RobotContainer {
         // reset the field-centric heading on left bumper press
         driver.back().whileTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-        //Autodrive to Pose
+        /*Autodrive to Pose
         driver.leftBumper().whileTrue(new ProxyCommand(() ->
            new PIDautopilotCommand(drivetrain, drivetrain.getPoseMap().get(drivetrain.getSelectedPoseKey()).get(0), driver, operator)));
         driver.leftBumper().onFalse(drivetrain.getDefaultCommand());
@@ -139,6 +139,27 @@ public class RobotContainer {
         driver.rightBumper().whileTrue(new ProxyCommand(() ->
            new PIDautopilotCommand(drivetrain, drivetrain.getPoseMap().get(drivetrain.getSelectedPoseKey()).get(2), driver, operator)));
         driver.rightBumper().onFalse(drivetrain.getDefaultCommand());
+        */
+
+        driver.rightBumper().onTrue(new ProxyCommand(()-> drivetrain.PathfindToPose(
+            drivetrain.getPoseMap().get(drivetrain.getSelectedPoseKey()).get(3), 
+            constraints, 
+            0)));
+        driver.rightBumper().onFalse(drivetrain.getDefaultCommand());
+
+        driver.leftBumper().onTrue(new ProxyCommand(()-> drivetrain.PathfindToPose(
+            drivetrain.getPoseMap().get(drivetrain.getSelectedPoseKey()).get(3), 
+            constraints, 
+            0))
+        );
+        driver.leftBumper().onFalse(drivetrain.getDefaultCommand());
+
+        driver.y().onTrue(new ProxyCommand(()-> drivetrain.PathfindToPose(
+            drivetrain.getPoseMap().get(drivetrain.getSelectedPoseKey()).get(3), 
+            constraints, 
+            0))
+        );
+        driver.y().onFalse(drivetrain.getDefaultCommand());
 
 
         
