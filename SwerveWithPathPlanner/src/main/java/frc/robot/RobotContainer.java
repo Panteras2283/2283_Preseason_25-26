@@ -34,6 +34,8 @@ import frc.robot.Constants;
 import frc.robot.subsystems.*;
 import frc.robot.commands.*;
 
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+
 public class RobotContainer {
     
 
@@ -139,7 +141,7 @@ public class RobotContainer {
         driver.rightBumper().whileTrue(new ProxyCommand(() ->
            new PIDautopilotCommand(drivetrain, drivetrain.getPoseMap().get(drivetrain.getSelectedPoseKey()).get(2), driver, operator)));
         driver.rightBumper().onFalse(drivetrain.getDefaultCommand());
-        */
+        
 
         driver.rightBumper().onTrue(new ProxyCommand(()-> drivetrain.PathfindToPose(
             drivetrain.getPoseMap().get(drivetrain.getSelectedPoseKey()).get(3), 
@@ -161,9 +163,39 @@ public class RobotContainer {
         );
         driver.y().onFalse(drivetrain.getDefaultCommand());
 
+        */
+        driver.leftBumper().whileTrue(
+            new SequentialCommandGroup(
+                new ProxyCommand(()-> drivetrain.PathfindToPose(
+            drivetrain.getPoseMap().get(drivetrain.getSelectedPoseKey()).get(3), 
+            constraints, 
+            0)),
+                new PIDautopilotCommand(drivetrain, drivetrain.getPoseMap().get(drivetrain.getSelectedPoseKey()).get(0), driver, operator)
+            )
+        );
+        driver.leftBumper().onFalse(drivetrain.getDefaultCommand());
 
-        
-        //driver.rightBumper().whileTrue(drivetrain.PathfindToPose(targetPose, constraints, 0.0));
+        driver.y().whileTrue(
+            new SequentialCommandGroup(
+                new ProxyCommand(()-> drivetrain.PathfindToPose(
+            drivetrain.getPoseMap().get(drivetrain.getSelectedPoseKey()).get(1), 
+            constraints, 
+            0)),
+                new PIDautopilotCommand(drivetrain, drivetrain.getPoseMap().get(drivetrain.getSelectedPoseKey()).get(2), driver, operator)
+            )
+        );
+        driver.y().onFalse(drivetrain.getDefaultCommand());
+
+        driver.rightBumper().whileTrue(
+            new SequentialCommandGroup(
+                new ProxyCommand(()-> drivetrain.PathfindToPose(
+            drivetrain.getPoseMap().get(drivetrain.getSelectedPoseKey()).get(3), 
+            constraints, 
+            0)),
+                new PIDautopilotCommand(drivetrain, drivetrain.getPoseMap().get(drivetrain.getSelectedPoseKey()).get(2), driver, operator)
+            )
+        );
+        driver.rightBumper().onFalse(drivetrain.getDefaultCommand());
 
 
         drivetrain.registerTelemetry(logger::telemeterize);
