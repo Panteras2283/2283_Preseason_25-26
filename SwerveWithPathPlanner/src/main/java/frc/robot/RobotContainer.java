@@ -150,7 +150,7 @@ public class RobotContainer {
         //operator.button(7).onTrue(setPoseKey("FS1"));
         //operator.button(8).onTrue(setPoseKey("FS2"));
         //operator.button(9).onTrue(setPoseKey("PR"));
-        operator.pov(180).onTrue(new Feed_Coral(s_Claw, s_Elevator));
+        operator.pov(180).onTrue(new Feed_Coral(s_Claw, s_Elevator, s_LEDs));
         operator.pov(180).onFalse(s_Claw.getDefaultCommand());
         
         operator.b().onTrue(new ScoreCoral(s_Elevator, s_Claw, s_LEDs,

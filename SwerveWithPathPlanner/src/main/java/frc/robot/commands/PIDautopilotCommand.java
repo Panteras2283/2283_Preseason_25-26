@@ -37,15 +37,15 @@ public class PIDautopilotCommand extends Command {
 
   // --- TUNING VALUES ---
   // Start with values like 2.5 for P and 0 for I and D, then tune
-  private static final double kPX = 2; // Proportional gain for X
+  private static final double kPX = 1.5; // Proportional gain for X
   private static final double kIX = 0.2; // Integral gain for X
   private static final double kDX = 0.0; // Derivative gain for X
 
-  private static final double kPY = 2; // Proportional gain for Y
+  private static final double kPY = 1.5; // Proportional gain for Y
   private static final double kIY = 0.2; // Integral gain for Y
   private static final double kDY = 0.0; // Derivative gain for Y
 
-  private static final double kPRot = 2; // Proportional gain for Rotation
+  private static final double kPRot = 1.5; // Proportional gain for Rotation
   private static final double kIRot = 0.2; // Integral gain for Rotation
   private static final double kDRot = 0.0; // Derivative gain for Rotation
 

@@ -14,12 +14,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class Feed_Coral extends Command {
   private Claw s_Claw;
   private Elevator s_Elevator;
+  private LEDs s_LEDs;
   /** Creates a new Test1. */
   
-  public Feed_Coral(Claw s_Claw, Elevator s_Elevator) {
+  public Feed_Coral(Claw s_Claw, Elevator s_Elevator, LEDs s_LEDs) {
     this.s_Claw = s_Claw;
     this.s_Elevator = s_Elevator;
-    addRequirements(s_Claw, s_Elevator);
+    this.s_LEDs = s_LEDs;
+    addRequirements(s_Claw, s_Elevator, s_LEDs);
     
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -36,6 +38,7 @@ public class Feed_Coral extends Command {
       s_Claw.setPosition(Constants.ClawConstants.feedCoral_pos);
       s_Claw.WristDown();
       s_Claw.Claw_FS();
+      s_LEDs.Feeding();
     }
 
     if (s_Claw.getUpperSensor() == false || s_Claw.getLowerSensor() == false){
@@ -54,6 +57,7 @@ public class Feed_Coral extends Command {
   @Override
   public boolean isFinished() {
     if (s_Claw.getUpperSensor() == false || s_Claw.getLowerSensor() == false){
+      s_LEDs.Coral();
       return true;
     } else {
       return false;
