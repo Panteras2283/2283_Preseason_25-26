@@ -50,7 +50,7 @@ public class PIDautopilotCommand extends Command {
   private static final double kDRot = 0.0; // Derivative gain for Rotation
 
   // Tolerances for ending the command
-  private static final double POSE_TOLERANCE_METERS = 0.01; // 5 cm
+  private static final double POSE_TOLERANCE_METERS = 0.05; // 5 cm
   private static final double ANGLE_TOLERANCE_RADIANS = Units.degreesToRadians(2); // 2 degrees
   // --- END TUNING VALUES ---
 
