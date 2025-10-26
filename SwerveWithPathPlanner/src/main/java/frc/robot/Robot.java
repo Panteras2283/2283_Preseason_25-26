@@ -11,6 +11,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -118,6 +119,7 @@ public class Robot extends TimedRobot {
 
     // Add this line to put the scheduler on SmartDashboard
     SmartDashboard.putData(CommandScheduler.getInstance());
+    
 
     // Add boolean Limelight buttons to SmartDashboard
     SmartDashboard.putBoolean("LL Left", kUseLimelightLeft);
@@ -152,7 +154,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() { //Robot periodic is called every 20ms, so we can use it to update the dashboard with the robot's position and other information.
     CommandScheduler.getInstance().run();
-
+    
+    SmartDashboard.putNumber("Match Time", Timer.getMatchTime());
 
 
     //We get the robot's pose from the drivetrain and set it in the Field2d object to visualize it on the dashboard.

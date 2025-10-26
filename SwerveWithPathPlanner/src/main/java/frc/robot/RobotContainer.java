@@ -147,7 +147,7 @@ public class RobotContainer {
         );
         //driver.leftBumper().whileFalse(drivetrain.getDefaultCommand());
 
-        driver.y().onTrue(
+        driver.y().whileTrue(
             new SequentialCommandGroup(
                 new ProxyCommand(()-> drivetrain.PathfindToPose(
                     drivetrain.getPoseMap().get(drivetrain.getSelectedPoseKey()).get(1), 
