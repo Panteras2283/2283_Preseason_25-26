@@ -129,7 +129,7 @@ public class RobotContainer {
         // reset the field-centric heading on left bumper press
         driver.back().whileTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-        driver.leftBumper().onTrue( 
+        driver.leftBumper().whileTrue( 
             new SequentialCommandGroup(
                 new ProxyCommand(()-> drivetrain.PathfindToPose(
                     drivetrain.getPoseMap().get(drivetrain.getSelectedPoseKey()).get(3), 
@@ -145,7 +145,7 @@ public class RobotContainer {
                 ))
             )
         );
-        driver.leftBumper().onFalse(drivetrain.getDefaultCommand());
+        //driver.leftBumper().whileFalse(drivetrain.getDefaultCommand());
 
         driver.y().onTrue(
             new SequentialCommandGroup(
@@ -163,9 +163,9 @@ public class RobotContainer {
                 ))
             )
         );
-        driver.y().onFalse(drivetrain.getDefaultCommand());
+        //driver.y().onFalse(drivetrain.getDefaultCommand());
 
-        driver.rightBumper().onTrue(
+        driver.rightBumper().whileTrue(
             new SequentialCommandGroup(
                 new ProxyCommand(()-> drivetrain.PathfindToPose(
                     drivetrain.getPoseMap().get(drivetrain.getSelectedPoseKey()).get(3), 
@@ -181,7 +181,7 @@ public class RobotContainer {
                 ))
             )
         );
-        driver.rightBumper().onFalse(drivetrain.getDefaultCommand());
+        //driver.rightBumper().onFalse(drivetrain.getDefaultCommand());
 
 
         drivetrain.registerTelemetry(logger::telemeterize);
