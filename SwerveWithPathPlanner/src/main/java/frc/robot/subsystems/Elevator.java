@@ -5,19 +5,13 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Robot;
-
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.sim.TalonFXSimState;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.sim.SparkFlexSim;
+
 import com.revrobotics.sim.SparkMaxSim;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -26,7 +20,6 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
 
@@ -49,11 +42,6 @@ public class Elevator extends SubsystemBase {
   private SparkMaxSim elevatorSimRight;
   private double leftSimTargetPosition = 0;
   private double rightSimTargetPosition = 0;
-  private double m_leftSimCurrentPosition = 0; // The actual simulated position
-  private double m_rightSimCurrentPosition = 0; // The actual simulated position
-  private static final double SIM_SPEED = 50.0; // Units per second, adjust as needed
-  private double leftMotorTargetVelocity = 0;
-  private double rightMotorTargetVelocity = 0;
 
 
   public Elevator() {
