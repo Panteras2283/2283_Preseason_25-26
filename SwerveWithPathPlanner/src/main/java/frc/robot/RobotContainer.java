@@ -207,6 +207,9 @@ public class RobotContainer {
         operator.x().onFalse(s_Claw.getDefaultCommand());
         operator.x().onFalse(s_Elevator.getDefaultCommand());
 
+        operator.start().onTrue(new Net(s_Claw, s_Elevator, s_LEDs));
+        operator.start().onFalse(s_Claw.getDefaultCommand());
+
         operator.leftStick().onTrue(new InstantCommand(()-> s_Elevator.fullDown(), s_Elevator));
         operator.leftStick().onFalse(s_Elevator.getDefaultCommand());
         operator.rightStick().onTrue(new InstantCommand(()-> s_Elevator.resetElevatorEncoders(), s_Elevator));

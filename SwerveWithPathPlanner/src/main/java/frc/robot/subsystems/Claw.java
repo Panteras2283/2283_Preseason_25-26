@@ -166,6 +166,16 @@ public class Claw extends SubsystemBase {
     }
   }
 
+  public void Algae_Release(){
+    clawLeft.setControl(m_request.withVelocity(-100));
+    clawRight.setControl(m_request.withVelocity(100));
+
+    if (RobotBase.isSimulation()) {
+      leftGripperTargetVelocity = -80;
+      rightGripperTargetVelocity = 80;
+    }
+  }
+
   public void Claw_ReleaseForAlae(){
     clawLeft.setControl(m_request.withVelocity(-65));
     clawRight.setControl(m_request.withVelocity(65));
