@@ -168,7 +168,7 @@ public class RobotContainer {
                     constraints, 
                     0
                 )),
-                // *** WRAPPED THIS IN A PROXYCOMMAND ***
+                
                 new ProxyCommand(() -> new PIDautopilotCommand(
                     drivetrain, 
                     drivetrain.getPoseMap().get(drivetrain.getSelectedPoseKey()).get(2), 

@@ -23,12 +23,15 @@ import edu.wpi.first.math.numbers.N3;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
 
+import frc.robot.util.*;
+
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private final RobotContainer m_robotContainer;
   private final boolean kUseLimelightLeft = true;
   private final boolean kUseLimelightRight = true;
+  
   //Std devs constants
   private static final double kSpinGateRevPerSec = 1.0;
 
@@ -227,7 +230,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.schedule();
     }
     // Add this line to switch to the "Autonomous" tab on Elastic
-    NetworkTableInstance.getDefault().getTable("SmartDashboard").getStringTopic(".elastic/activeTab").publish().set("Autonomous");
+    Elastic.selectTab("Autonomous");
   }
 
   @Override
@@ -242,7 +245,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
     // Add this line to switch to the "Teleoperated" tab on Elastic
-    NetworkTableInstance.getDefault().getTable("SmartDashboard").getStringTopic(".elastic/activeTab").publish().set("Teleoperated");
+    Elastic.selectTab("Teleoperated");
   }
 
   @Override
