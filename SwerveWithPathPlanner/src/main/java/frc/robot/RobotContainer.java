@@ -10,6 +10,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.path.PathConstraints;
 
@@ -72,9 +73,17 @@ public class RobotContainer {
 
 
     public RobotContainer() {
-        autoChooser = AutoBuilder.buildAutoChooser("AUTO 1");
+        autoChooser = AutoBuilder.buildAutoChooser("AUTO 3");
         SmartDashboard.putData("Auto Mode", autoChooser);
         
+        NamedCommands.registerCommand("Score_Coral", new ScoreCoral(s_Elevator, s_Claw, s_LEDs,
+        Constants.ElevatorConstants.leftL4_pos, 
+        Constants.ElevatorConstants.rightL4_pos,
+        Constants.ClawConstants.L4_pos, "L4"));
+
+        NamedCommands.registerCommand("Feed", new Feed_Coral(s_Claw, s_Elevator, s_LEDs));
+        NamedCommands.registerCommand("Default_Claw", new Default_Claw(s_Claw));
+        NamedCommands.registerCommand("Default_Elevator", new Default_Elevator(s_Elevator));
 
         configureBindings();
 
