@@ -73,7 +73,7 @@ public class Constants {
         public static final double leftL4_pos = 58.64;
 
         public static final double leftProcessor_pos = 0;
-        public static final double leftNet_pos = 0;
+        public static final double leftNet_pos = 59;
         public static final double leftA1_pos = 0;
         public static final double leftA2_pos = 0;
 
@@ -88,7 +88,7 @@ public class Constants {
         public static final double rightL4_pos = -58.64;
 
         public static final double rightProcessor_pos = 0;
-        public static final double rightNet_pos = 0;
+        public static final double rightNet_pos = -59;
         public static final double rightA1_pos = 0;
         public static final double rightA2_pos = 0;
         
