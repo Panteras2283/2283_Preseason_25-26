@@ -73,9 +73,6 @@ public class RobotContainer {
 
 
     public RobotContainer() {
-        autoChooser = AutoBuilder.buildAutoChooser("AUTO 3");
-        SmartDashboard.putData("Auto Mode", autoChooser);
-        
         NamedCommands.registerCommand("Score_Coral", new ScoreCoral(s_Elevator, s_Claw, s_LEDs,
         Constants.ElevatorConstants.leftL4_pos, 
         Constants.ElevatorConstants.rightL4_pos,
@@ -84,6 +81,11 @@ public class RobotContainer {
         NamedCommands.registerCommand("Feed", new Feed_Coral(s_Claw, s_Elevator, s_LEDs));
         NamedCommands.registerCommand("Default_Claw", new Default_Claw(s_Claw));
         NamedCommands.registerCommand("Default_Elevator", new Default_Elevator(s_Elevator));
+        
+        autoChooser = AutoBuilder.buildAutoChooser("AUTO 3");
+        SmartDashboard.putData("Auto Mode", autoChooser);
+        
+        
 
         configureBindings();
 
