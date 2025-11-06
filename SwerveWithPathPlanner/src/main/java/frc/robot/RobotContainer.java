@@ -61,29 +61,43 @@ public class RobotContainer {
     private final SlewRateLimiter xLimiter = new SlewRateLimiter(7);
     private final SlewRateLimiter yLimiter = new SlewRateLimiter(7);
     private final SlewRateLimiter rotLimiter = new SlewRateLimiter(10);
-    /* Path follower */
-    private final SendableChooser<Command> autoChooser;
-
-   
 
     /*Subsystems */
-   private final Claw s_Claw = new Claw();
-   private final Elevator s_Elevator = new Elevator();
-   private final LEDs s_LEDs = new LEDs();
+    final Claw s_Claw;
+    final Elevator s_Elevator;
+    final LEDs s_LEDs;
 
+     /* Path follower */
+     private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
-        
+
+        s_Claw = new Claw();
+        s_Elevator = new Elevator();
+        s_LEDs = new LEDs();
+
+        s_Claw.setDefaultCommand(new Default_Claw(s_Claw));
+
+        s_Elevator.setDefaultCommand(new Default_Elevator(s_Elevator));
+
+        drivetrain.setDefaultCommand(
+            drivetrain.applyRequest(() ->
+                drive.withVelocityX(-yLimiter.calculate(driver.getLeftY()*MaxSpeed)) // Drive forward with negative Y (forward)
+                    .withVelocityY(-xLimiter.calculate(driver.getLeftX()*MaxSpeed)) // Drive left with negative X (left)
+                    .withRotationalRate(-rotLimiter.calculate(driver.getRightX()*MaxAngularRate)) // Drive counterclockwise with negative X (left)
+            )
+        );
+
         NamedCommands.registerCommand("Score_Coral", new ScoreCoral(s_Elevator, s_Claw, s_LEDs,
         Constants.ElevatorConstants.leftL4_pos, 
         Constants.ElevatorConstants.rightL4_pos,
-        Constants.ClawConstants.L4_pos, "L4"));
+        Constants.ClawConstants.L4_pos,"L4"));
 
         NamedCommands.registerCommand("Feed", new Feed_Coral(s_Claw, s_Elevator, s_LEDs));
         NamedCommands.registerCommand("Default_Claw", new Default_Claw(s_Claw));
         NamedCommands.registerCommand("Default_Elevator", new Default_Elevator(s_Elevator));
         
-        autoChooser = AutoBuilder.buildAutoChooser("AUTO 1");
+        autoChooser = AutoBuilder.buildAutoChooser("Auto test");
         SmartDashboard.putData("Auto Mode", autoChooser);
         
         
@@ -100,19 +114,7 @@ public class RobotContainer {
 
     private void configureBindings() {
 
-        s_Claw.setDefaultCommand(new Default_Claw(s_Claw));
-        // Note that X is defined as forward according to WPILib convention,
-        // and Y is defined as to the left according to WPILib convention.
-        s_Elevator.setDefaultCommand(new Default_Elevator(s_Elevator));
-
-        drivetrain.setDefaultCommand(
-            // Drivetrain will execute this command periodically
-            drivetrain.applyRequest(() ->
-                drive.withVelocityX(-yLimiter.calculate(driver.getLeftY()*MaxSpeed)) // Drive forward with negative Y (forward)
-                    .withVelocityY(-xLimiter.calculate(driver.getLeftX()*MaxSpeed)) // Drive left with negative X (left)
-                    .withRotationalRate(-rotLimiter.calculate(driver.getRightX()*MaxAngularRate)) // Drive counterclockwise with negative X (left)
-            )
-        );
+       
 
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
