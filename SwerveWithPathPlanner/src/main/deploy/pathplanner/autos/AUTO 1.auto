@@ -7,31 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "5A"
+            "pathName": "FIRST"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "LFS"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "6A"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "LFS2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "6B"
+            "name": "Score_Coral"
           }
         }
       ]
