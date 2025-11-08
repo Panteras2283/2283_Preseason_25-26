@@ -65,6 +65,7 @@ public class Claw extends SubsystemBase {
   private double simTargetPosition = 0;
   private double m_simCurrentPosition = 0; // The actual simulated position
   private static final double SIM_SPEED = 50.0; // Units per second, adjust as needed
+  public boolean CoralGrabbed = false;
   private TalonFXSimState leftGripperSim = clawLeft.getSimState();
   private TalonFXSimState rightGripperSim = clawRight.getSimState();
   private double leftGripperTargetVelocity = 0;

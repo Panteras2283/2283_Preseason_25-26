@@ -96,6 +96,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("Feed", new Feed_Coral(s_Claw, s_Elevator, s_LEDs));
         NamedCommands.registerCommand("Default_Claw", new Default_Claw(s_Claw));
         NamedCommands.registerCommand("Default_Elevator", new Default_Elevator(s_Elevator));
+        NamedCommands.registerCommand("ResetElevator", new SequentialCommandGroup(new InstantCommand(()-> s_Elevator.fullDown(), s_Elevator), new InstantCommand(()-> s_Elevator.resetElevatorEncoders(), s_Elevator)));
         
         autoChooser = AutoBuilder.buildAutoChooser("Auto test");
         SmartDashboard.putData("Auto Mode", autoChooser);

@@ -5,10 +5,19 @@
 package frc.robot.commands;
 import frc.robot.subsystems.*;
 import frc.robot.Constants;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
+
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.sim.TalonFXSimState;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.sim.SparkFlexSim;
+import com.revrobotics.sim.SparkMaxSim;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ScoreCoral extends Command {
+  private TalonFX clawLeft = new TalonFX(Constants.ClawConstants.clawLeftID);
+  private TalonFX clawRight = new TalonFX(Constants.ClawConstants.clawRightID);
   private Elevator s_Elevator;
   private Claw s_Claw;
   private LEDs s_LEDs;
@@ -16,6 +25,7 @@ public class ScoreCoral extends Command {
   private double right_pos;
   private double claw_pos;
   private String animation;
+  
     /** Creates a new Test1. */
     
     public ScoreCoral(Elevator s_Elevator, Claw s_Claw, LEDs s_LEDs, double left_pos, double right_pos, double claw_pos, String animation) {
@@ -48,33 +58,68 @@ public class ScoreCoral extends Command {
         s_LEDs.L4();
         break;  
     }
-    s_Elevator.setPosition(left_pos, right_pos);
-    if(s_Elevator.getLeftPos() >= left_pos - 0.2 || s_Elevator.getRightPos() <= right_pos + 0.2){
-      s_Claw.setPosition(claw_pos);
-      if (s_Claw.getPosition() >= claw_pos -0.1 && s_Claw.getPosition() <= claw_pos + 0.1){
-        if (left_pos == Constants.ElevatorConstants.leftL1_pos){
-          s_Claw.Claw_ReleaseL1();
-          if (s_Claw.getUpperSensor() == true || s_Claw.getLowerSensor() == true){
-            s_Claw.Claw_Stop();
-            s_Claw.setPosition(0);
-            if (s_Claw.getPosition() == 0 || s_Claw.getPosition() < 1.5){
-              s_Elevator.setPosition(Constants.ElevatorConstants.leftDefault_pos, Constants.ElevatorConstants.rightDefault_pos);
+
+    if(RobotBase.isReal()){
+      s_Elevator.setPosition(left_pos, right_pos);
+      if(s_Elevator.getLeftPos() >= left_pos - 0.2 || s_Elevator.getRightPos() <= right_pos + 0.2){
+        s_Claw.setPosition(claw_pos);
+        if (s_Claw.getPosition() >= claw_pos -0.1 && s_Claw.getPosition() <= claw_pos + 0.1){
+          if (left_pos == Constants.ElevatorConstants.leftL1_pos){
+            s_Claw.Claw_ReleaseL1();
+            if (s_Claw.getUpperSensor() == true || s_Claw.getLowerSensor() == true){
+              s_Claw.Claw_Stop();
+              s_Claw.setPosition(0);
+              if (s_Claw.getPosition() == 0 || s_Claw.getPosition() < 1.5){
+                s_Elevator.setPosition(Constants.ElevatorConstants.leftDefault_pos, Constants.ElevatorConstants.rightDefault_pos);
+              }
+
             }
 
-          }
-
-        } else {
-          s_Claw.Claw_Release();
-          if (s_Claw.getUpperSensor() == true || s_Claw.getLowerSensor() == true){
-            s_Claw.Claw_Stop();
-            s_Claw.setPosition(0);
-            if (s_Claw.getPosition() == 0 || s_Claw.getPosition() < 0.5){
-              s_Elevator.setPosition(Constants.ElevatorConstants.leftDefault_pos, Constants.ElevatorConstants.rightDefault_pos);
+          } else {
+            s_Claw.Claw_Release();
+            if (s_Claw.getUpperSensor() == true || s_Claw.getLowerSensor() == true){
+              s_Claw.Claw_Stop();
+              s_Claw.setPosition(0);
+              if (s_Claw.getPosition() == 0 || s_Claw.getPosition() < 0.5){
+                s_Elevator.setPosition(Constants.ElevatorConstants.leftDefault_pos, Constants.ElevatorConstants.rightDefault_pos);
+              }
             }
           }
         }
       }
     }
+      if(RobotBase.isSimulation()){
+          s_Elevator.setPosition(left_pos, right_pos);
+        if(s_Elevator.getLeftPos() >= left_pos - 0.2 || s_Elevator.getRightPos() <= right_pos + 0.2){
+          s_Claw.setPosition(claw_pos);
+          if (s_Claw.getPosition() >= claw_pos -0.1 && s_Claw.getPosition() <= claw_pos + 0.1){
+            if (left_pos == Constants.ElevatorConstants.leftL1_pos){
+              s_Claw.Claw_ReleaseL1();
+              s_Claw.CoralGrabbed = false;
+              if (s_Claw.CoralGrabbed == false){
+                s_Claw.Claw_Stop();
+                s_Claw.setPosition(0);
+                if (s_Claw.getPosition() == 0 || s_Claw.getPosition() < 1.5){
+                  s_Elevator.setPosition(Constants.ElevatorConstants.leftDefault_pos, Constants.ElevatorConstants.rightDefault_pos);
+                } 
+              
+              }
+
+            } else {
+              s_Claw.Claw_Release();
+              if (s_Claw.CoralGrabbed == false){
+                s_Claw.Claw_Stop();
+                s_Claw.setPosition(0);
+                if (s_Claw.getPosition() == 0 || s_Claw.getPosition() < 0.5){
+                  s_Elevator.setPosition(Constants.ElevatorConstants.leftDefault_pos, Constants.ElevatorConstants.rightDefault_pos);
+                }
+              }
+            }
+          }
+        }
+      }
+
+
   }
 
   // Called once the command ends or is interrupted.
