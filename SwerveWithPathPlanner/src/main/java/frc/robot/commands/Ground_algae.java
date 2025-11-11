@@ -12,15 +12,13 @@ import frc.robot.Constants;
 public class Ground_algae extends Command {
   private Claw s_Claw;
   private Elevator s_Elevator;
-  private LEDs s_LEDs;
   /** Creates a new Net. */
   public Ground_algae(Claw s_Claw, Elevator s_Elevator, LEDs s_LEDs) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.s_Claw = s_Claw;
     this.s_Elevator = s_Elevator;
-    this.s_LEDs = s_LEDs;
 
-    addRequirements(s_Claw, s_Elevator, s_LEDs);
+    addRequirements(s_Claw, s_Elevator);
   }
 
   // Called when the command is initially scheduled.
@@ -35,7 +33,7 @@ public class Ground_algae extends Command {
           s_Claw.setPosition(Constants.ClawConstants.groundAlgae_pos);
           s_Claw.WristUp();
           s_Claw.Claw_Grab();
-          s_LEDs.Algae();
+
         }
 
       }

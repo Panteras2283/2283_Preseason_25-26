@@ -30,51 +30,24 @@ public class Net extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    s_LEDs.Net();
+
     s_Claw.WristUp();
     s_Elevator.setPosition(Constants.ElevatorConstants.leftNet_pos, Constants.ElevatorConstants.rightNet_pos);
-    if(s_Elevator.getLeftPos() >= Constants.ElevatorConstants.leftNet_pos - 0.2 || s_Elevator.getRightPos() <= Constants.ElevatorConstants.rightNet_pos + 0.2){
-      s_Claw.setPosition(Constants.ClawConstants.default_pos);
-      if (s_Claw.getPosition() >= Constants.ClawConstants.default_pos -0.2 && s_Claw.getPosition() <= Constants.ClawConstants.default_pos + 0.2){
-        s_Claw.Algae_Release();
-        if (s_Claw.getUpperSensor() == true || s_Claw.getLowerSensor() == true){
-          s_Claw.Claw_Stop();
-          s_Claw.setPosition(0);
-          if (s_Claw.getPosition() == 0 || s_Claw.getPosition() < 0.5){
-            s_Elevator.setPosition(Constants.ElevatorConstants.leftDefault_pos, Constants.ElevatorConstants.rightDefault_pos);
-            s_Claw.WristDown();
-          }
-        }
-      } else{
-        s_Claw.Algae_Release();
-          if (s_Claw.getUpperSensor() == true || s_Claw.getLowerSensor() == true){
-            s_Claw.Claw_Stop();
-            s_Claw.setPosition(0);
-            if (s_Claw.getPosition() == 0 || s_Claw.getPosition() < 0.5){
-              s_Elevator.setPosition(Constants.ElevatorConstants.leftDefault_pos, Constants.ElevatorConstants.rightDefault_pos);
-              s_Claw.WristDown();
-        }
-      }
+    
     }
-  }
-}
+  
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    s_Claw.Algae_Release();
+   /*  s_Claw.Algae_Release();
     s_Claw.setPosition(Constants.ClawConstants.default_pos);
-    s_Claw.WristDown();
+    s_Claw.WristDown();*/
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if((s_Claw.getUpperSensor() == true && s_Claw.getLowerSensor()==true) && (s_Elevator.getLeftPos() >= Constants.ElevatorConstants.leftDefault_pos - 0.05 || s_Elevator.getRightPos() <= Constants.ElevatorConstants.rightDefault_pos + 0.05)){
-      s_LEDs.Default();
-      return true;
-    } else {
       return false;
-    }
   }
 }

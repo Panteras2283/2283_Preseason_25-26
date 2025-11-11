@@ -224,6 +224,9 @@ public class RobotContainer {
 
         operator.start().onTrue(new Net(s_Claw, s_Elevator, s_LEDs));
         operator.start().onFalse(s_Claw.getDefaultCommand());
+        operator.back().onTrue(new InstantCommand(()-> s_Claw.Algae_Release()));
+        operator.back().onFalse(new InstantCommand(()->s_Claw.Claw_Stop()));
+    
 
         operator.leftStick().onTrue(new InstantCommand(()-> s_Elevator.fullDown(), s_Elevator));
         operator.leftStick().onFalse(s_Elevator.getDefaultCommand());
@@ -233,6 +236,11 @@ public class RobotContainer {
         operator.pov(270).onTrue(new Ground_algae(s_Claw, s_Elevator, s_LEDs));
         operator.pov(270).onFalse(s_Claw.getDefaultCommand());
         operator.pov(270).onFalse(s_Elevator.getDefaultCommand());
+
+        operator.rightBumper().onTrue(new InstantCommand(()-> s_Claw.Claw_Grab()));
+        operator.rightBumper().onFalse(new InstantCommand(()-> s_Claw.Claw_Stop()));
+
+
 
 
 
