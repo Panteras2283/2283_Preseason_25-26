@@ -230,6 +230,10 @@ public class RobotContainer {
         operator.rightStick().onTrue(new InstantCommand(()-> s_Elevator.resetElevatorEncoders(), s_Elevator));
         operator.rightStick().onFalse(s_Elevator.getDefaultCommand());
 
+        operator.pov(270).onTrue(new Ground_algae(s_Claw, s_Elevator, s_LEDs));
+        operator.pov(270).onFalse(s_Claw.getDefaultCommand());
+        operator.pov(270).onFalse(s_Elevator.getDefaultCommand());
+
 
 
 

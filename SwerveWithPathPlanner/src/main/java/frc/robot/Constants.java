@@ -30,7 +30,7 @@ public class Constants {
 
             public static final double default_pos = 3;
             public static final double feedCoral_pos = 0.5;
-            public static final double groundAlgae_pos = 0;
+            public static final double groundAlgae_pos = 14;
             public static final double L1_pos = 0;
             public static final double L2_pos = 7.51; 
             public static final double L3_pos = 7.36;
