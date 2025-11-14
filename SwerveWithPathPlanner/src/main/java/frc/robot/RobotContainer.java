@@ -237,8 +237,13 @@ public class RobotContainer {
         operator.pov(270).onFalse(s_Claw.getDefaultCommand());
         operator.pov(270).onFalse(s_Elevator.getDefaultCommand());
 
-        operator.rightBumper().onTrue(new InstantCommand(()-> s_Claw.Claw_Grab()));
-        operator.rightBumper().onFalse(new InstantCommand(()-> s_Claw.Claw_Stop()));
+        operator.pov(0).onTrue(new InstantCommand(()-> s_Claw.Claw_Grab()));
+        operator.pov(0).onFalse(new InstantCommand(()-> s_Claw.Claw_Stop()));
+
+        operator.rightBumper().onTrue(new Pick_Algae(s_Elevator, s_Claw, Constants.ElevatorConstants.leftA1_pos, Constants.ElevatorConstants.rightA1_pos, Constants.ClawConstants.A1_pos));
+        operator.rightBumper().onFalse(s_Claw.getDefaultCommand());
+        operator.leftBumper().onTrue(new Pick_Algae(s_Elevator, s_Claw, Constants.ElevatorConstants.leftA2_pos, Constants.ElevatorConstants.rightA2_pos, Constants.ClawConstants.A2_pos));
+        operator.leftBumper().onFalse(s_Claw.getDefaultCommand());
 
 
 

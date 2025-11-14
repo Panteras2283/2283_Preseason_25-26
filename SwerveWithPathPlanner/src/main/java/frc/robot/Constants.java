@@ -37,8 +37,8 @@ public class Constants {
             public static final double L4_pos = 6.57;
             public static final double P_pos = 0;
             public static final double N_pos = 0;
-            public static final double A1_pos = 0;
-            public static final double A2_pos = 0;
+            public static final double A1_pos = 7.02;
+            public static final double A2_pos = 8.28;
 
             public static final double slot0S = 0.1;
             public static final double slot0V = 0.12;
@@ -74,8 +74,8 @@ public class Constants {
 
         public static final double leftProcessor_pos = 0;
         public static final double leftNet_pos = 59;
-        public static final double leftA1_pos = 0;
-        public static final double leftA2_pos = 0;
+        public static final double leftA1_pos = 11.21;
+        public static final double leftA2_pos = 27.5;
 
         //RIGHT MOTOR POSITIONS
         public static final double rightDefault_pos = -1;
@@ -89,8 +89,8 @@ public class Constants {
 
         public static final double rightProcessor_pos = 0;
         public static final double rightNet_pos = -59;
-        public static final double rightA1_pos = 0;
-        public static final double rightA2_pos = 0;
+        public static final double rightA1_pos = -11.21;
+        public static final double rightA2_pos = -27.5;
         
     }
 
