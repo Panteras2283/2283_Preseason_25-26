@@ -23,12 +23,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Score_Coral"
-          }
-        },
-        {
           "type": "wait",
           "data": {
             "waitTime": 0.3
@@ -57,24 +51,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.3
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Tester"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ResetElevator"
           }
         },
         {
