@@ -32,6 +32,7 @@ import java.util.Map;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 
 
+
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
  * Subsystem so it can easily be used in command-based projects.
@@ -40,8 +41,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private String selectedPoseKey = "1";
     private final Map<String, List<Pose2d>> poseMap;
    
-
-
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
@@ -254,6 +253,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
          * Otherwise, only check and apply the operator perspective if the DS is disabled.
          * This ensures driving behavior doesn't change until an explicit disable event occurs during testing.
          */
+
+        
+        
+
         if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
             DriverStation.getAlliance().ifPresent(allianceColor -> {
                 setOperatorPerspectiveForward(
