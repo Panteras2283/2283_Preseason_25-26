@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 
@@ -25,6 +26,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 
 import frc.robot.util.*;
 
+import gg.questnav.questnav.*;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -101,14 +103,18 @@ public class Robot extends TimedRobot {
   }
 
 
-  //private final QuestNav questNav = new QuestNav();
+  private final QuestNav questNav = new QuestNav();
+  Matrix<N3, N1> QUESTNAV_STD_DEVS =
+    VecBuilder.fill(
+        0.02, // Trust down to 2cm in X direction
+        0.02, // Trust down to 2cm in Y direction
+        0.035 // Trust down to 2 degrees rotational
+    );
   
-  
-  
+
   //We create the Field2d object to visualize the robot's position on the field in the dashboard.
   private final Field2d m_field = new Field2d();
 
-  
 
   public Robot() {
     m_robotContainer = new RobotContainer();
@@ -211,8 +217,6 @@ public class Robot extends TimedRobot {
        
       }
     }
-
-    
 
   }
 
