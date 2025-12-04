@@ -108,8 +108,7 @@ public class Robot extends TimedRobot {
     VecBuilder.fill(
         0.02, // Trust down to 2cm in X direction
         0.02, // Trust down to 2cm in Y direction
-        0.035 // Trust down to 2 degrees rotational
-    );
+        0.035); // Trust down to 2 degrees rotational
   
 
   //We create the Field2d object to visualize the robot's position on the field in the dashboard.
@@ -165,6 +164,17 @@ public class Robot extends TimedRobot {
 
     //We get the robot's pose from the drivetrain and set it in the Field2d object to visualize it on the dashboard.
     m_field.setRobotPose(m_robotContainer.drivetrain.getState().Pose); 
+
+    if(questNav.isTracking()){
+      PoseFrame[] questFrames = questNav.getAllUnreadPoseFrames();
+
+      for(PoseFrame questFrame : questFrames){
+        Pose3d questPose = questFrame.questPose3d();
+        double timestamp = questFrame.dataTimestamp();
+        
+        //Pose3d robotPose3d = questPose.transformBy(Constants.);
+      }
+    }
 
     // Logging callback for target robot pose
     PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
